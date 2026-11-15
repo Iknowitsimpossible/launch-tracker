@@ -1,0 +1,36 @@
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* go, success, in flight: the accent outline from style E */
+.confirmed {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* waiting for a date, on hold, date not set: muted */
+.uncertain {
+  color: var(--muted);
+  border-color: var(--muted);
+}
+
+/* failure: filled, so it cannot be mistaken for the outlined tags */
+.failure {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+/* partial failure: accent text, dashed border, light tint */
+.partial {
+  color: var(--accent);
+  border-style: dashed;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}

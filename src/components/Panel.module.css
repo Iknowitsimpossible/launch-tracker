@@ -1,0 +1,11 @@
+.panel {
+  border-top: 1px solid var(--fg);
+  padding: 18px 0 30px;
+}
+
+.panel h2 {
+  font-family: var(--head);
+  font-size: 26px;
+  font-weight: 400;
+  margin-bottom: 14px;
+}

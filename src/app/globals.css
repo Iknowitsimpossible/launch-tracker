@@ -21,3 +21,40 @@ body {
   color: var(--fg);
   font-family: var(--body);
 }
+
+/* ---- Global rules added by the pages (tokens above stay untouched) ---- */
+*:where(:not(html, body)) {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Page column shared by header, main and footer. */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Visible keyboard focus on every link and button. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Text for screen readers only. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

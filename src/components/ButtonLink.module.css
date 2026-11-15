@@ -1,0 +1,25 @@
+/* Also used by AddToCalendarButton so a link and a button look identical. */
+.button {
+  display: inline-block;
+  font: 600 14px var(--body);
+  padding: 11px 18px;
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+  background: none;
+  color: var(--fg);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.primary {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.primary:hover {
+  background: color-mix(in srgb, var(--fg) 85%, var(--bg));
+}

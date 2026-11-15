@@ -1,0 +1,12 @@
+.back {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--fg);
+  text-decoration: underline;
+}
