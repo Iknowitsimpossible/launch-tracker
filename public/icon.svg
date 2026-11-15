@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#faf8f3"/>
+  <!-- Rocket shapes from RocketOutline.tsx (96x240 box), scaled 1.6x and centred on 256,256 -->
+  <g transform="translate(256 256) scale(1.6) translate(-40 -117)" fill="none" stroke="#18181b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 6c8 14 11 30 11 44H29c0-14 3-30 11-44z"/>
+    <rect x="31" y="50" width="18" height="170"/>
+    <path d="M31 112h18M31 196l-11 26M49 196l11 26M35 220l-2 8h14l-2-8"/>
+  </g>
+  <!-- One small accent dot: a porthole on the body -->
+  <circle cx="256" cy="200" r="9" fill="#b4311a"/>
+</svg>
