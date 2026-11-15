@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch tracker: style mockups</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ---------- shared structure (same content in every style) ---------- */
+* { box-sizing: border-box; margin: 0; }
+body { font-family: Inter, system-ui, sans-serif; background: #000; }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+
+.switch { position: sticky; top: 0; z-index: 9; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  padding: 10px 16px; background: #000; color: #bbb; font-size: 13px; }
+.switch button { font: 500 13px Inter, sans-serif; padding: 6px 14px; border-radius: 999px; border: 1px solid #555;
+  background: none; color: #fff; cursor: pointer; }
+.switch button[aria-pressed="true"] { background: #fff; color: #000; border-color: #fff; }
+
+#app { background: var(--bg); color: var(--fg); min-height: 100vh; padding-bottom: 48px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+header.top { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+.brand { font-family: var(--head); font-size: 22px; letter-spacing: .04em; }
+nav { display: flex; gap: 20px; font-size: 14px; color: var(--muted); }
+
+.hero { display: grid; gap: 28px; }
+.eyebrow, .label { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--head); line-height: 1.02; margin: 10px 0 8px; }
+.sub { color: var(--muted); font-size: 16px; }
+.tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  white-space: nowrap; }
+.cd { display: flex; gap: 14px; margin: 24px 0; }
+.cd div { min-width: 72px; }
+.cd b { display: block; font-family: var(--num); font-variant-numeric: tabular-nums; line-height: 1; }
+.cd i { font-style: normal; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.when { font-size: 15px; line-height: 1.6; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.btn { font: 600 14px Inter, sans-serif; padding: 11px 18px; text-decoration: none; cursor: pointer; }
+.hero-photo { position: relative; overflow: hidden; }
+.hero-photo img { width: 100%; height: 100%; object-fit: cover; }
+.credit { position: absolute; right: 8px; bottom: 6px; font-size: 11px; color: #fff; opacity: .8; }
+
+.panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; }
+.panel h2 { font-family: var(--head); margin-bottom: 14px; }
+.panel p { font-size: 15px; line-height: 1.55; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.stats b { display: block; font-family: var(--num); font-size: 24px; font-variant-numeric: tabular-nums; }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 14px; margin-top: 14px; }
+.facts dt { color: var(--muted); }
+.wide { grid-column: 1 / -1; }
+.tl { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(116px, 1fr)); gap: 10px; }
+.tl li { font-size: 13px; padding: 10px; }
+.tl span { display: block; font-family: var(--num); font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+
+.section-title { font-family: var(--head); margin: 44px 0 16px; }
+.list { display: grid; gap: 8px; counter-reset: n; }
+.item { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 16px; align-items: center; text-decoration: none; }
+.item img { width: 56px; height: 56px; object-fit: cover; }
+.item b { display: block; font-size: 15px; }
+.item small { color: var(--muted); font-size: 13px; }
+.item time { font-family: var(--num); font-size: 13px; color: var(--muted); text-align: right; }
+footer { margin-top: 40px; font-size: 12px; color: var(--muted); }
+
+@media (max-width: 760px) {
+  .panels, .stats { grid-template-columns: 1fr 1fr; }
+  .panel { grid-column: 1 / -1; }
+  .item { grid-template-columns: 48px 1fr auto; }
+  .item time { display: none; }
+  nav { display: none; }
+}
+
+/* ---------- visual sections: mission tiles, rocket figure, flight-profile timeline ---------- */
+.lead { font-family: var(--head); font-size: 21px !important; line-height: 1.35 !important; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 14px; margin-top: 20px; }
+.tile { display: flex; gap: 12px; align-items: center; }
+.tile svg { width: 42px; height: 42px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round; }
+.tile b { display: block; font-size: 16px; }
+.tile small { color: var(--muted); font-size: 13px; line-height: 1.35; display: block; }
+
+/* Mission "plates": small line drawings in the same pen style as the rocket figure. */
+.plates { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 22px 18px; margin-top: 22px; }
+.plate svg { display: block; width: 100px; height: 80px; margin-bottom: 10px; fill: none; stroke: var(--fg);
+  stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; border-bottom: 1px solid var(--line); }
+.plate svg .dash { stroke-dasharray: 2.5 3; }
+.plate svg .hot { fill: var(--accent); stroke: none; }
+.plate svg .hot-line { stroke: var(--accent); stroke-dasharray: 2 3; }
+.plate svg .solid { fill: var(--fg); }
+.plate b { display: block; font-size: 15px; }
+.plate small { display: block; color: var(--muted); font-size: 13px; line-height: 1.35; }
+
+.rocket { display: grid; grid-template-columns: 96px 1fr; gap: 22px; align-items: center; }
+.rocket .sil { height: 240px; width: 96px; fill: none; stroke: var(--fg); stroke-width: 1.4; stroke-linejoin: round; }
+.rocket .sil .dim { stroke: var(--muted); stroke-width: 1; }
+.rocket .sil text { fill: var(--muted); stroke: none; font: 11px Inter, sans-serif; }
+.bigstats { display: grid; gap: 14px; }
+.bigstats b { font-family: var(--num); font-size: 34px; font-weight: 400; line-height: 1; font-variant-numeric: tabular-nums; }
+.bigstats span { display: block; color: var(--muted); font-size: 14px; margin-top: 2px; }
+.flights { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0 4px; }
+.flights i { width: 10px; height: 20px; border: 1.5px solid var(--fg); border-radius: 5px 5px 2px 2px; }
+.flights i.on { background: var(--accent); border-color: var(--accent); }
+
+.flight { display: block; width: 100%; height: auto; }
+.flight .ground, .flight .ascent { fill: none; stroke: var(--fg); stroke-width: 2; }
+.flight .return { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 6 6; }
+.flight circle { fill: var(--bg); stroke: var(--fg); stroke-width: 2; }
+.flight circle.go { fill: var(--accent); stroke: var(--accent); }
+.flight text { font: 17px Inter, sans-serif; fill: var(--fg); }
+.flight text.t { font-family: var(--num); fill: var(--muted); font-size: 15px; }
+.flight text.go { fill: var(--accent); font-weight: 600; }
+.flight text.note { fill: var(--muted); font-size: 14px; font-style: italic; }
+.flight .ship { fill: var(--fg); stroke: none; }
+.caption { font-size: 12px !important; color: var(--muted); margin-top: 8px; }
+@media (min-width: 621px) { #app .tl { display: none; } }
+@media (max-width: 620px) {
+  /* The flight-profile drawing is too small to read on a phone, so it becomes a vertical line of events. */
+  .flight { display: none; }
+  #app .tl { display: block; border-left: 2px solid var(--fg); margin-left: 6px; }
+  #app .tl li { position: relative; border: 0; padding: 0 0 16px 20px; background: none; }
+  #app .tl li::before { content: ""; position: absolute; left: -7px; top: 3px; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--bg); border: 2px solid var(--fg); }
+  #app .tl li.now::before { background: var(--accent); border-color: var(--accent); }
+  #app .tl li.now { font-weight: 600; }
+  .tiles { grid-template-columns: 1fr; }
+}
+
+/* ---------- Style A: Mission Control ---------- */
+#app:is([data-style="a"],[data-style="d"]) { --bg: #0a0e13; --fg: #e6edf3; --muted: #7d8b99; --panel: #111820; --line: #1f2a36;
+  --accent: #3ddc97; --head: "Space Grotesk", sans-serif; --num: "JetBrains Mono", monospace; }
+:is([data-style="a"],[data-style="d"]) .brand::before { content: "● "; color: var(--accent); }
+:is([data-style="a"],[data-style="d"]) .hero { grid-template-columns: 1.15fr 1fr; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 28px; }
+:is([data-style="a"],[data-style="d"]) h1 { font-size: 44px; font-weight: 600; }
+:is([data-style="a"],[data-style="d"]) .cd b { font-size: 52px; color: var(--accent); }
+:is([data-style="a"],[data-style="d"]) .hero-photo { border-radius: 4px; border: 1px solid var(--line); min-height: 320px; }
+:is([data-style="a"],[data-style="d"]) .hero-photo img { filter: saturate(.75) contrast(1.05); }
+:is([data-style="a"],[data-style="d"]) .tag { background: rgba(61,220,151,.12); color: var(--accent); border: 1px solid rgba(61,220,151,.4);
+  border-radius: 3px; font-family: var(--num); }
+:is([data-style="a"],[data-style="d"]) .tag.warn { background: rgba(255,180,84,.1); color: #ffb454; border-color: rgba(255,180,84,.4); }
+:is([data-style="a"],[data-style="d"]) .tag.dim { background: none; color: var(--muted); border-color: var(--line); }
+:is([data-style="a"],[data-style="d"]) .btn { border-radius: 4px; border: 1px solid var(--line); background: none; color: var(--fg); }
+:is([data-style="a"],[data-style="d"]) .btn.primary { background: var(--accent); color: #04130c; border-color: var(--accent); }
+:is([data-style="a"],[data-style="d"]) .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 22px; }
+:is([data-style="a"],[data-style="d"]) .panel h2, [data-style="a"] .section-title { font-size: 13px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); font-weight: 600; }
+:is([data-style="a"],[data-style="d"]) .tl li { border: 1px solid var(--line); border-radius: 4px; }
+:is([data-style="a"],[data-style="d"]) .tl li.now { border-color: var(--accent); }
+:is([data-style="a"],[data-style="d"]) .tl li.now span { color: var(--accent); }
+:is([data-style="a"],[data-style="d"]) .item { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 16px 10px 10px; }
+:is([data-style="a"],[data-style="d"]) .item img { border-radius: 3px; }
+
+/* ---------- Style D: Mix (A's dark panels + B's big photo, serif headline and photo cards) ---------- */
+[data-style="d"] .hero { display: flex; align-items: flex-end; position: relative; overflow: hidden; padding: 0; min-height: 520px; }
+[data-style="d"] .hero-photo { position: absolute; inset: 0; border: 0; border-radius: 0; }
+[data-style="d"] .hero-photo img { filter: none; }
+[data-style="d"] .hero-body { position: relative; z-index: 1; width: 100%; padding: 170px 32px 30px;
+  background: linear-gradient(to top, rgba(10,14,19,.96) 45%, rgba(10,14,19,0)); }
+[data-style="d"] .hero .eyebrow, [data-style="d"] .hero .sub, [data-style="d"] .hero .cd i { color: #b6c2cf; }
+[data-style="d"] h1 { font-family: Fraunces, Georgia, serif; font-size: 68px; font-weight: 400; letter-spacing: -.02em; }
+[data-style="d"] .credit { top: 8px; bottom: auto; z-index: 2; }
+[data-style="d"] .list { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+[data-style="d"] .item { display: block; padding: 0 0 16px; overflow: hidden; }
+[data-style="d"] .item img { width: 100%; height: 150px; border-radius: 0; margin-bottom: 14px; }
+[data-style="d"] .item > :not(img) { margin-left: 16px; margin-right: 16px; }
+[data-style="d"] .item b { font-family: Fraunces, Georgia, serif; font-size: 19px; font-weight: 400; margin-bottom: 4px; }
+[data-style="d"] .item time { display: block; text-align: left; margin-top: 10px; margin-bottom: 10px; }
+@media (max-width: 760px) {
+  [data-style="d"] .hero { padding: 0; min-height: 440px; }
+  [data-style="d"] .hero-body { padding: 120px 20px 22px; }
+  [data-style="d"] h1 { font-size: 44px; }
+}
+
+/* ---------- Style B: Editorial ---------- */
+#app:is([data-style="b"],[data-style="e"]) { --bg: #faf8f3; --fg: #18181b; --muted: #6b6b70; --line: #dcd8cf; --accent: #b4311a;
+  --head: Fraunces, Georgia, serif; --num: Fraunces, Georgia, serif; }
+:is([data-style="b"],[data-style="e"]) header.top { border-bottom: 1px solid var(--fg); }
+:is([data-style="b"],[data-style="e"]) .brand { font-size: 26px; font-weight: 600; letter-spacing: 0; }
+:is([data-style="b"],[data-style="e"]) .hero { margin-top: 24px; }
+:is([data-style="b"],[data-style="e"]) .hero-photo { order: -1; height: 440px; }
+:is([data-style="b"],[data-style="e"]) .hero-body { max-width: 780px; }
+:is([data-style="b"],[data-style="e"]) h1 { font-size: 64px; font-weight: 400; letter-spacing: -.02em; }
+:is([data-style="b"],[data-style="e"]) .sub { font-size: 19px; }
+:is([data-style="b"],[data-style="e"]) .cd { gap: 28px; }
+:is([data-style="b"],[data-style="e"]) .cd b { font-size: 60px; font-weight: 400; }
+:is([data-style="b"],[data-style="e"]) .tag { background: none; color: var(--accent); border: 1px solid var(--accent); }
+:is([data-style="b"],[data-style="e"]) .tag.warn, :is([data-style="b"],[data-style="e"]) .tag.dim { color: var(--muted); border-color: var(--line); }
+:is([data-style="b"],[data-style="e"]) .btn { border: 1px solid var(--fg); background: none; color: var(--fg); border-radius: 999px; }
+:is([data-style="b"],[data-style="e"]) .btn.primary { background: var(--fg); color: var(--bg); }
+:is([data-style="b"],[data-style="e"]) .panels { gap: 0 48px; margin-top: 44px; }
+:is([data-style="b"],[data-style="e"]) .panel { border-top: 1px solid var(--fg); padding: 18px 0 30px; }
+:is([data-style="b"],[data-style="e"]) .panel h2 { font-size: 26px; font-weight: 400; }
+:is([data-style="b"],[data-style="e"]) .panel p { font-size: 17px; }
+:is([data-style="b"],[data-style="e"]) .stats b { font-size: 32px; font-weight: 400; }
+:is([data-style="b"],[data-style="e"]) .tl li { border-top: 1px solid var(--line); padding: 10px 0; }
+:is([data-style="b"],[data-style="e"]) .tl li.now { border-top: 2px solid var(--accent); }
+:is([data-style="b"],[data-style="e"]) .tl li.now span { color: var(--accent); }
+:is([data-style="b"],[data-style="e"]) .section-title { font-size: 34px; font-weight: 400; border-top: 1px solid var(--fg); padding-top: 16px; }
+:is([data-style="b"],[data-style="e"]) .list { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 28px 24px; }
+:is([data-style="b"],[data-style="e"]) .item { display: block; }
+:is([data-style="b"],[data-style="e"]) .item img { width: 100%; height: 170px; margin-bottom: 12px; }
+:is([data-style="b"],[data-style="e"]) .item b { font-family: var(--head); font-size: 20px; font-weight: 400; line-height: 1.2; margin-bottom: 4px; }
+:is([data-style="b"],[data-style="e"]) .item time { display: block; text-align: left; font-family: Inter, sans-serif; margin: 8px 0; }
+
+/* ---------- Style E: B's look, with A's thumbnail rows and C's compact row text ---------- */
+[data-style="e"] .list { grid-template-columns: 1fr; gap: 0; }
+[data-style="e"] .item { display: grid; grid-template-columns: 64px 1fr auto auto; gap: 18px; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--line); }
+[data-style="e"] .item img { width: 64px; height: 64px; margin: 0; border-radius: 4px; }
+[data-style="e"] .item b { font-family: Inter, sans-serif; font-size: 16px; font-weight: 600; margin: 0 0 2px; }
+[data-style="e"] .item time { display: block; text-align: right; margin: 0; }
+@media (max-width: 760px) {
+  /* On phones the date moves under the name instead of disappearing. */
+  [data-style="e"] .item { grid-template-columns: 52px 1fr auto; gap: 2px 12px; }
+  [data-style="e"] .item img { width: 52px; height: 52px; grid-row: 1 / span 2; }
+  [data-style="e"] .item time { grid-column: 2; grid-row: 2; text-align: left; }
+  [data-style="e"] .item .tag { grid-column: 3; grid-row: 1 / span 2; }
+}
+
+/* ---------- Style C: Retro Poster ---------- */
+#app[data-style="c"] { --bg: #f2e8cf; --fg: #17255a; --muted: #4d5788; --line: #17255a; --accent: #e4572e;
+  --head: "Bebas Neue", Impact, sans-serif; --num: "Bebas Neue", Impact, sans-serif; }
+[data-style="c"] .brand { font-size: 34px; }
+[data-style="c"] nav { color: var(--fg); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; font-size: 13px; }
+[data-style="c"] .hero { grid-template-columns: 1fr 320px; align-items: center; background: var(--accent);
+  border: 3px solid var(--line); box-shadow: 8px 8px 0 var(--line); padding: 32px; }
+[data-style="c"] .hero .eyebrow, [data-style="c"] .hero .sub, [data-style="c"] .hero .cd i { color: var(--fg); }
+[data-style="c"] h1 { font-size: 92px; letter-spacing: .01em; line-height: .92; font-weight: 400; }
+[data-style="c"] .sub { font-weight: 600; }
+[data-style="c"] .cd b { font-size: 84px; }
+[data-style="c"] .hero-photo { width: 320px; height: 320px; border-radius: 50%; border: 3px solid var(--line); background: var(--bg); }
+[data-style="c"] .hero-photo img { filter: grayscale(1) contrast(1.2); mix-blend-mode: multiply; }
+[data-style="c"] .credit { display: none; }
+[data-style="c"] .tag { background: var(--fg); color: var(--bg); border-radius: 0; text-transform: uppercase; letter-spacing: .08em; }
+[data-style="c"] .tag.warn { background: var(--bg); color: var(--fg); border: 2px solid var(--fg); }
+[data-style="c"] .tag.dim { background: none; color: var(--fg); border: 2px solid var(--fg); }
+[data-style="c"] .btn { border: 3px solid var(--line); background: var(--bg); color: var(--fg); text-transform: uppercase; letter-spacing: .06em; }
+[data-style="c"] .btn.primary { background: var(--fg); color: var(--bg); }
+[data-style="c"] .panels { margin-top: 36px; }
+[data-style="c"] .panel { border: 3px solid var(--line); padding: 22px; background: #fbf5e4; }
+[data-style="c"] .panel h2 { font-size: 34px; font-weight: 400; }
+[data-style="c"] .stats b { font-size: 40px; color: var(--accent); }
+[data-style="c"] .tl li { border: 2px solid var(--line); font-weight: 600; }
+[data-style="c"] .tl li.now { background: var(--accent); }
+[data-style="c"] .tl li.now span { color: var(--fg); }
+[data-style="c"] .section-title { font-size: 52px; font-weight: 400; }
+[data-style="c"] .list { gap: 0; border-top: 3px solid var(--line); }
+[data-style="c"] .item { grid-template-columns: 56px 1fr auto auto; border-bottom: 3px solid var(--line); padding: 14px 0; }
+[data-style="c"] .item img { display: none; }
+[data-style="c"] .item::before { counter-increment: n; content: counter(n, decimal-leading-zero);
+  font-family: var(--head); font-size: 40px; color: var(--accent); line-height: 1; }
+[data-style="c"] .item b { font-size: 17px; }
+
+@media (max-width: 760px) {
+  :is([data-style="a"],[data-style="d"]) .hero, [data-style="c"] .hero { grid-template-columns: 1fr; padding: 20px; }
+  :is([data-style="b"],[data-style="e"]) h1 { font-size: 42px; }
+  :is([data-style="b"],[data-style="e"]) .hero-photo { height: 240px; }
+  [data-style="c"] h1 { font-size: 60px; }
+  [data-style="c"] .hero-photo { width: 200px; height: 200px; }
+  .cd b { font-size: 44px !important; }
+  .cd div { min-width: 0; }
+  [data-style="c"] .item { grid-template-columns: 44px 1fr auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="switch">
+  <span>Style:</span>
+  <button data-pick="a" aria-pressed="true">A · Mission Control</button>
+  <button data-pick="b" aria-pressed="false">B · Editorial</button>
+  <button data-pick="c" aria-pressed="false">C · Retro Poster</button>
+  <button data-pick="d" aria-pressed="false">D · Mix (A + B)</button>
+  <button data-pick="e" aria-pressed="false">E · B with image rows</button>
+</div>
+
+<div id="app" data-style="a">
+ <div class="wrap">
+  <header class="top">
+    <div class="brand">LIFTOFF</div>
+    <nav><span>Upcoming</span><span>Recent</span><span>About</span></nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-body">
+      <span class="eyebrow">Next launch &nbsp;</span><span class="tag">Go for launch</span>
+      <h1>USSF-317</h1>
+      <p class="sub">Falcon 9 Block 5 · SpaceX</p>
+      <div class="cd">
+        <div><b id="cd-d">00</b><i>days</i></div>
+        <div><b id="cd-h">00</b><i>hours</i></div>
+        <div><b id="cd-m">00</b><i>min</i></div>
+        <div><b id="cd-s">00</b><i>sec</i></div>
+      </div>
+      <p class="when"><strong id="hero-when"></strong> (your time)<br>
+        Space Launch Complex 4E · Vandenberg SFB, California, USA</p>
+      <div class="actions">
+        <a class="btn primary" href="https://x.com/i/broadcasts/2lgkMvaRVPMdYR">▶ Watch live</a>
+        <a class="btn">Add to calendar</a>
+        <a class="btn">Remind me</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <img src="https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/falcon_9_liftof_image_20260816171423.jpg" alt="Falcon 9 lifting off from Vandenberg">
+      <span class="credit">Photo: SpaceX</span>
+    </div>
+  </section>
+
+  <section class="panels">
+    <div class="panel">
+      <h2>Weather at the pad</h2>
+      <div class="stats">
+        <div><span class="label">Wind</span><b>13</b><small>km/h NW</small></div>
+        <div><span class="label">Visibility</span><b>24</b><small>km</small></div>
+        <div><span class="label">Cloud</span><b>100</b><small>%</small></div>
+        <div><span class="label">Rain</span><b>3</b><small>% chance</small></div>
+      </div>
+      <dl class="facts"><dt>Temperature</dt><dd>14 °C at launch time</dd><dt>Source</dt><dd>Open-Meteo forecast</dd></dl>
+    </div>
+
+    <div class="panel">
+      <h2>Mission</h2>
+      <p class="lead">A classified US Space Force mission, possibly a batch of Starshield-based satellites.</p>
+      <div class="plates">
+        <div class="plate">
+          <!-- Earth's curve, a dashed orbit above it, one satellite on the orbit -->
+          <svg viewBox="0 0 80 64"><circle cx="40" cy="98" r="52"/><ellipse cx="40" cy="98" rx="22" ry="52"/><path d="M-6 66q46-14 92 0"/><circle class="dash" cx="40" cy="98" r="68"/><circle class="hot" cx="68.7" cy="36.4" r="3.2"/></svg>
+          <b>Low Earth orbit</b><small>Destination</small>
+        </div>
+        <div class="plate">
+          <!-- four helmets, all dashed = no seats filled; a crewed launch fills one per astronaut -->
+          <svg viewBox="0 0 80 64"><g class="dash"><circle cx="13" cy="34" r="8"/><circle cx="31" cy="34" r="8"/><circle cx="49" cy="34" r="8"/><circle cx="67" cy="34" r="8"/></g><path class="dash" d="M8 36h10M26 36h10M44 36h10M62 36h10"/></svg>
+          <b>Uncrewed</b><small>No astronauts aboard</small>
+        </div>
+        <div class="plate">
+          <!-- a satellite with its body covered by a redaction bar -->
+          <svg viewBox="0 0 80 64"><rect x="6" y="25" width="22" height="14"/><path d="M13.3 25v14M20.6 25v14M28 32h6M46 32h6"/><rect x="52" y="25" width="22" height="14"/><path d="M59.3 25v14M66.6 25v14"/><rect x="34" y="22" width="12" height="20"/><path d="M40 22v-7M36 13q4-5 8 0"/><rect class="hot" x="27" y="28" width="26" height="8"/></svg>
+          <b>Classified payload</b><small>Government satellites</small>
+        </div>
+        <div class="plate">
+          <!-- a booster standing on a barge at sea -->
+          <svg viewBox="0 0 80 64"><path class="hot-line" d="M40 2v8"/><rect x="37" y="13" width="6" height="31"/><path d="M37 36l-8 8M43 36l8 8"/><rect class="solid" x="16" y="44" width="48" height="5"/><path d="M2 56q5-5 10 0t10 0 10 0 10 0 10 0 10 0 10 0 10 0"/></svg>
+          <b>Lands on a droneship</b><small>"Of Course I Still Love You", 574 km downrange</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>The rocket</h2>
+      <div class="rocket">
+        <svg class="sil" viewBox="0 0 96 240" aria-label="Rocket outline, 70 metres tall">
+          <path d="M40 6c8 14 11 30 11 44H29c0-14 3-30 11-44z"/>
+          <rect x="31" y="50" width="18" height="170"/>
+          <path d="M31 112h18M31 196l-11 26M49 196l11 26M35 220l-2 8h14l-2-8"/>
+          <path class="dim" d="M74 6v222M69 6h10M69 228h10"/>
+          <text x="80" y="121" transform="rotate(90 80 121)" text-anchor="middle">70 m</text>
+        </svg>
+        <div class="bigstats">
+          <div><b>70 m</b><span>tall, about a 20-storey building</span></div>
+          <div><b>7,607 kN</b><span>liftoff thrust, roughly 7 jumbo jets</span></div>
+          <div><b>22.8 t</b><span>to low orbit, about 4 elephants</span></div>
+          <div>
+            <div class="flights"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i></div>
+            <span>Booster B1100, on its 11th flight</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Photos &amp; video</h2>
+      <p>Official livestream starts about 12 minutes before liftoff. A photo gallery of the rocket, pad and landing ship goes here.</p>
+      <div class="actions"><a class="btn primary" href="https://x.com/i/broadcasts/2lgkMvaRVPMdYR">▶ Livestream on X</a><a class="btn" href="https://www.spacex.com/launches/ussf317">Official page</a></div>
+    </div>
+  </section>
+
+  <h2 class="section-title">Upcoming</h2>
+  <div class="list" id="upcoming"></div>
+
+  <h2 class="section-title">Recent (past month)</h2>
+  <div class="list" id="recent"></div>
+
+  <footer>Mockup with sample data from the Launch Library test server and Open-Meteo. "LIFTOFF" is a placeholder name.</footer>
+ </div>
+</div>
+
+<script>
+const IMG = 'https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/';
+const NEXT_LAUNCH = '2026-11-18T03:14:00Z';
+
+const upcoming = [
+  { name: 'USSF-266', sub: 'Falcon 9 · SpaceX · Vandenberg, USA', net: '2026-11-18T16:49:00Z', tag: 'Go', img: 'falcon_9_liftof_image_thumbnail_20260816171423.jpeg' },
+  { name: 'Unknown payload', sub: 'Long March 2D · CASC · Taiyuan, China', net: '2026-11-18T22:50:00Z', tag: 'Go', img: '255bauto255d__image_thumbnail_20240305193719.jpeg' },
+  { name: 'SatNet LEO Group', sub: 'Long March 8A · CASC · Wenchang, China', net: '2026-11-20T11:00:00Z', tag: 'To be confirmed', kind: 'warn', img: 'cz-8a_launch_2_image_thumbnail_20251206093108.jpeg' },
+  { name: 'NROL-136', sub: 'Falcon 9 · SpaceX · Vandenberg, USA', net: '2026-11-21T12:30:00Z', tag: 'Go', img: 'falcon_9_on_slc_image_thumbnail_20241024165957.jpeg' },
+  { name: 'Amazon Leo (LE-04)', sub: 'Ariane 64 · Arianespace · French Guiana', net: '2026-11-23T00:00:00Z', tag: 'Date not set', kind: 'warn', img: 'ariane_64_lifto_image_thumbnail_20260618063419.jpeg' },
+];
+const recent = [
+  { name: 'The Mountain God Rises', sub: 'Electron · Rocket Lab · Mahia, New Zealand', net: '2026-11-14T05:30:00Z', img: '255bauto255d__image_thumbnail_20240305193613.jpeg' },
+  { name: 'MKA Kinosputnik and others', sub: 'Soyuz 2.1b · Roscosmos · Vostochny, Russia', net: '2026-11-14T00:50:00Z', img: '255bauto255d__image_thumbnail_20240305193901.jpeg' },
+  { name: 'Starship Flight 15', sub: 'Starship · SpaceX · Starbase, USA', net: '2026-11-13T22:45:00Z', img: 'starship_on_the_image_thumbnail_20260724044615.jpeg' },
+  { name: 'Amazon Leo (LV-01)', sub: 'Vulcan · United Launch Alliance · Cape Canaveral, USA', net: '2026-11-13T17:54:00Z', img: '255bauto255d__image_thumbnail_20240305193955.jpeg' },
+];
+
+// Show every time in the visitor's own time zone.
+const formatLocal = (iso) => new Date(iso).toLocaleString(undefined,
+  { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+function renderList(elementId, launches, defaultTag) {
+  document.getElementById(elementId).innerHTML = launches.map((launch) => `
+    <a class="item">
+      <img src="${IMG + launch.img}" alt="">
+      <div><b>${launch.name}</b><small>${launch.sub}</small></div>
+      <time>${formatLocal(launch.net)}</time>
+      <span class="tag ${launch.kind || (defaultTag ? 'dim' : '')}">${launch.tag || defaultTag}</span>
+    </a>`).join('');
+}
+renderList('upcoming', upcoming);
+renderList('recent', recent, 'Launched');
+// The hero also names the visitor's time zone (for example "EST") so there is no doubt whose clock it is.
+document.getElementById('hero-when').textContent = new Date(NEXT_LAUNCH).toLocaleString(undefined,
+  { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+
+function tick() {
+  const secondsLeft = Math.max(0, Math.floor((new Date(NEXT_LAUNCH) - Date.now()) / 1000));
+  const parts = { d: secondsLeft / 86400, h: (secondsLeft % 86400) / 3600, m: (secondsLeft % 3600) / 60, s: secondsLeft % 60 };
+  for (const [unit, value] of Object.entries(parts)) {
+    document.getElementById('cd-' + unit).textContent = String(Math.floor(value)).padStart(2, '0');
+  }
+}
+tick();
+setInterval(tick, 1000);
+
+document.querySelectorAll('.switch button').forEach((button) => {
+  button.addEventListener('click', () => {
+    document.getElementById('app').dataset.style = button.dataset.pick;
+    document.querySelectorAll('.switch button').forEach((other) =>
+      other.setAttribute('aria-pressed', String(other === button)));
+    window.scrollTo(0, 0);
+  });
+});
+</script>
+</body>
+</html>
