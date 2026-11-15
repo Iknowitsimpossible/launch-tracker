@@ -1,3 +1,14 @@
+/* Design tokens. Every component uses these names; do not rename them. */
+:root {
+  --bg: #faf8f3; /* page background (warm off-white) */
+  --fg: #18181b; /* text and drawing strokes */
+  --muted: #6b6b70; /* secondary text */
+  --line: #dcd8cf; /* hairline dividers */
+  --accent: #b4311a; /* the one highlight colour */
+  --head: var(--font-fraunces), Georgia, serif; /* headings and big numbers */
+  --body: var(--font-inter), system-ui, sans-serif;
+}
+
 *,
 *::before,
 *::after {
@@ -6,4 +17,7 @@
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
 }

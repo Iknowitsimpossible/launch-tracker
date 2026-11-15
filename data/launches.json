@@ -1,0 +1,248 @@
+{
+  "generatedAt": "2026-11-15T20:00:00Z",
+  "upcoming": [
+    {
+      "id": "76617033-4dc0-4448-b50c-e5b0d5a18539",
+      "slug": "falcon-9-block-5-ussf-317",
+      "name": "USSF-317",
+      "net": "2026-11-18T03:14:00Z",
+      "netPrecision": "exact",
+      "windowStart": "2026-11-18T03:14:00Z",
+      "windowEnd": "2026-11-18T07:14:00Z",
+      "status": "go",
+      "statusLabel": "Go for launch",
+      "failReason": null,
+      "image": {
+        "url": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/falcon_9_liftof_image_20260816171423.jpg",
+        "thumbnailUrl": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/falcon_9_liftof_image_thumbnail_20260816171423.jpeg",
+        "credit": "SpaceX"
+      },
+      "provider": { "name": "SpaceX", "abbrev": "SpX", "type": "Commercial", "countryCode": "US" },
+      "rocket": {
+        "name": "Falcon 9",
+        "fullName": "Falcon 9 Block 5",
+        "description": "Falcon 9 is a two-stage rocket designed and manufactured by SpaceX for the reliable and safe transport of satellites and the Dragon spacecraft into orbit. The Block 5 variant is the fifth major interval aimed at improving upon the ability for rapid reusability.",
+        "heightM": 70,
+        "diameterM": 3.65,
+        "liftoffThrustKN": 7607,
+        "leoCapacityKg": 22800,
+        "reusable": true,
+        "successfulLaunches": 645,
+        "totalLaunches": 646
+      },
+      "booster": { "serial": "B1100", "flightNumber": 11 },
+      "landing": {
+        "attempted": true,
+        "success": null,
+        "kind": "droneship",
+        "locationName": "Of Course I Still Love You",
+        "downrangeKm": 574
+      },
+      "mission": {
+        "description": "A classified mission for the United States Space Force. It is possibly a batch of classified LEO satellites based on SpaceX's Starshield satellite bus.",
+        "type": "Government/Top Secret",
+        "payloadKind": "classified",
+        "orbit": { "name": "Low Earth Orbit", "abbrev": "LEO" },
+        "orbitKind": "low_earth"
+      },
+      "crew": [],
+      "spacecraft": null,
+      "pad": {
+        "name": "Space Launch Complex 4E",
+        "locationName": "Vandenberg SFB, CA, USA",
+        "countryCode": "US",
+        "latitude": 34.632,
+        "longitude": -120.611,
+        "timezone": "America/Los_Angeles"
+      },
+      "weather": {
+        "forecastFor": "2026-11-18T03:00:00Z",
+        "temperatureC": 14.4,
+        "windKmh": 13,
+        "windDirectionDeg": 321,
+        "gustKmh": 10.4,
+        "visibilityKm": 24.1,
+        "cloudCoverPct": 100,
+        "rainChancePct": 3
+      },
+      "webcasts": [
+        { "title": "USSF-317 Mission", "url": "https://x.com/i/broadcasts/2lgkMvaRVPMdYR", "source": "X" }
+      ],
+      "infoLinks": [
+        { "title": "SpaceX", "url": "https://www.spacex.com/launches/ussf317", "source": "spacex.com" }
+      ],
+      "latestUpdate": { "comment": "Delayed to NET November 17 PST.", "createdOn": "2026-11-13T00:24:00Z" }
+    },
+    {
+      "id": "sample-sparse-launch",
+      "slug": "long-march-2d-unknown-payload",
+      "name": "Unknown Payload",
+      "net": "2026-11-18T22:50:00Z",
+      "netPrecision": "exact",
+      "windowStart": null,
+      "windowEnd": null,
+      "status": "go",
+      "statusLabel": "Go for launch",
+      "failReason": null,
+      "image": {
+        "url": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/long2520march25202d_image_20190222031211.jpeg",
+        "thumbnailUrl": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/255bauto255d__image_thumbnail_20240305193719.jpeg",
+        "credit": null
+      },
+      "provider": {
+        "name": "China Aerospace Science and Technology Corporation",
+        "abbrev": "CASC",
+        "type": "Government",
+        "countryCode": "CN"
+      },
+      "rocket": {
+        "name": "Long March 2D",
+        "fullName": "Long March 2D",
+        "description": null,
+        "heightM": 41.06,
+        "diameterM": 3.35,
+        "liftoffThrustKN": 2962,
+        "leoCapacityKg": 3500,
+        "reusable": false,
+        "successfulLaunches": null,
+        "totalLaunches": null
+      },
+      "booster": null,
+      "landing": null,
+      "mission": { "description": null, "type": "Unknown", "payloadKind": "other", "orbit": null, "orbitKind": "unknown" },
+      "crew": [],
+      "spacecraft": null,
+      "pad": {
+        "name": "Launch Complex 9",
+        "locationName": "Taiyuan Satellite Launch Center, People's Republic of China",
+        "countryCode": "CN",
+        "latitude": 38.863,
+        "longitude": 111.59,
+        "timezone": "Asia/Shanghai"
+      },
+      "weather": null,
+      "webcasts": [],
+      "infoLinks": [],
+      "latestUpdate": null
+    },
+    {
+      "id": "sample-undated-launch",
+      "slug": "ariane-64-amazon-leo-le-04",
+      "name": "Amazon Leo (LE-04)",
+      "net": "2026-11-23T00:00:00Z",
+      "netPrecision": "day",
+      "windowStart": null,
+      "windowEnd": null,
+      "status": "tbd",
+      "statusLabel": "To be determined",
+      "failReason": null,
+      "image": {
+        "url": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/ariane_64_lifto_image_20260618063419.jpg",
+        "thumbnailUrl": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/ariane_64_lifto_image_thumbnail_20260618063419.jpeg",
+        "credit": null
+      },
+      "provider": { "name": "Arianespace", "abbrev": "ASA", "type": "Commercial", "countryCode": "FR" },
+      "rocket": {
+        "name": "Ariane 6",
+        "fullName": "Ariane 64 Block 2",
+        "description": null,
+        "heightM": 63,
+        "diameterM": 5.4,
+        "liftoffThrustKN": 15400,
+        "leoCapacityKg": 21650,
+        "reusable": false,
+        "successfulLaunches": null,
+        "totalLaunches": null
+      },
+      "booster": null,
+      "landing": { "attempted": false, "success": null, "kind": "expended", "locationName": null, "downrangeKm": null },
+      "mission": {
+        "description": "A batch of satellites for Amazon's low Earth orbit internet constellation.",
+        "type": "Communications",
+        "payloadKind": "communications",
+        "orbit": { "name": "Low Earth Orbit", "abbrev": "LEO" },
+        "orbitKind": "low_earth"
+      },
+      "crew": [],
+      "spacecraft": null,
+      "pad": {
+        "name": "Ariane Launch Area 4",
+        "locationName": "Guiana Space Centre, French Guiana",
+        "countryCode": "GF",
+        "latitude": 5.256,
+        "longitude": -52.787,
+        "timezone": "America/Cayenne"
+      },
+      "weather": null,
+      "webcasts": [],
+      "infoLinks": [],
+      "latestUpdate": null
+    }
+  ],
+  "recent": [
+    {
+      "id": "sample-crewed-launch",
+      "slug": "falcon-9-block-5-crew-13",
+      "name": "Crew-13",
+      "net": "2026-10-01T15:10:06Z",
+      "netPrecision": "exact",
+      "windowStart": "2026-10-01T15:10:06Z",
+      "windowEnd": "2026-10-01T15:10:06Z",
+      "status": "success",
+      "statusLabel": "Launch successful",
+      "failReason": null,
+      "image": {
+        "url": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/falcon_9_on_slc_image_20241024165956.jpg",
+        "thumbnailUrl": "https://thespacedevs-dev.nyc3.digitaloceanspaces.com/media/images/falcon_9_on_slc_image_thumbnail_20241024165957.jpeg",
+        "credit": "SpaceX"
+      },
+      "provider": { "name": "SpaceX", "abbrev": "SpX", "type": "Commercial", "countryCode": "US" },
+      "rocket": {
+        "name": "Falcon 9",
+        "fullName": "Falcon 9 Block 5",
+        "description": "Falcon 9 is a two-stage rocket designed and manufactured by SpaceX.",
+        "heightM": 70,
+        "diameterM": 3.65,
+        "liftoffThrustKN": 7607,
+        "leoCapacityKg": 22800,
+        "reusable": true,
+        "successfulLaunches": 645,
+        "totalLaunches": 646
+      },
+      "booster": { "serial": "B1101", "flightNumber": 3 },
+      "landing": {
+        "attempted": true,
+        "success": true,
+        "kind": "landing_pad",
+        "locationName": "Landing Zone 40",
+        "downrangeKm": 0.3
+      },
+      "mission": {
+        "description": "A crew rotation flight carrying four astronauts to the International Space Station.",
+        "type": "Human Exploration",
+        "payloadKind": "crew",
+        "orbit": { "name": "Low Earth Orbit", "abbrev": "LEO" },
+        "orbitKind": "low_earth"
+      },
+      "crew": [
+        { "name": "Jessica Watkins", "role": "Spacecraft Commander" },
+        { "name": "Sample Pilot", "role": "Pilot" },
+        { "name": "Sample Specialist One", "role": "Mission Specialist" },
+        { "name": "Sample Specialist Two", "role": "Mission Specialist" }
+      ],
+      "spacecraft": { "name": "Crew Dragon Grace", "destination": "International Space Station" },
+      "pad": {
+        "name": "Space Launch Complex 40",
+        "locationName": "Cape Canaveral SFS, FL, USA",
+        "countryCode": "US",
+        "latitude": 28.562,
+        "longitude": -80.577,
+        "timezone": "America/New_York"
+      },
+      "weather": null,
+      "webcasts": [],
+      "infoLinks": [],
+      "latestUpdate": null
+    }
+  ]
+}
