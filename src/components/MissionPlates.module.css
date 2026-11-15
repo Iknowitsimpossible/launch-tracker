@@ -1,0 +1,25 @@
+/* The plates wrap onto as many rows as needed: each is at least 128px wide. */
+.plates {
+  display: grid;
+  /* 150px minimum gives a tidy 2x2 in a half-width panel (never 3 + 1) and 4 across when wide. */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 22px 18px;
+  margin-top: 22px;
+}
+
+.plate {
+  min-width: 0; /* lets long captions wrap instead of stretching the column */
+}
+
+.label {
+  display: block;
+  font-size: 15px;
+}
+
+.caption {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: break-word; /* long ship names on narrow phones */
+}
