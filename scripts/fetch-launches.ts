@@ -744,8 +744,9 @@ async function addWeather(launches: Launch[], now: Date): Promise<{ requestsMade
   url.searchParams.set('wind_speed_unit', 'kmh');
 
   let locations: OpenMeteoLocation[];
+  let requestsMade = 0;
   try {
-    const response = await fetch(url, { signal: AbortSignal.timeout(WEATHER_TIMEOUT_MS) });
+    const response = await fetchWeatherWithRetry(url, () => requestsMade++);
     if (!response.ok) throw new Error(`HTTP ${response.status}: ${(await response.text()).slice(0, 200)}`);
     const body: unknown = await response.json();
     // One location comes back as a single object, several as a list.
@@ -755,7 +756,7 @@ async function addWeather(launches: Launch[], now: Date): Promise<{ requestsMade
     }
   } catch (error) {
     console.warn(`Weather unavailable, continuing without it: ${errorMessage(error)}`);
-    return { requestsMade: 1, withWeather: 0 };
+    return { requestsMade, withWeather: 0 };
   }
 
   let withWeather = 0;
@@ -763,7 +764,33 @@ async function addWeather(launches: Launch[], now: Date): Promise<{ requestsMade
     launch.weather = readForecastHour(locations[index], hours[index]);
     if (launch.weather !== null) withWeather++;
   });
-  return { requestsMade: 1, withWeather };
+  return { requestsMade, withWeather };
+}
+
+/**
+ * One Open-Meteo request, tried a second time if the first attempt breaks at
+ * the network level (dropped connection, DNS hiccup, timeout) or the server
+ * answers 5xx. A 4xx answer is returned as is: asking again would not help.
+ */
+async function fetchWeatherWithRetry(url: URL, countRequest: () => void): Promise<Response> {
+  const maxAttempts = 2;
+  for (let attempt = 1; ; attempt++) {
+    const isLastAttempt = attempt === maxAttempts;
+    countRequest();
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(WEATHER_TIMEOUT_MS) });
+      if (response.status >= 500 && !isLastAttempt) {
+        console.warn(`Open-Meteo answered HTTP ${response.status}; retrying once`);
+        await sleep(RETRY_DELAY_MS);
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (isLastAttempt) throw error;
+      console.warn(`Open-Meteo request failed (${errorMessage(error)}); retrying once`);
+      await sleep(RETRY_DELAY_MS);
+    }
+  }
 }
 
 function readForecastHour(location: OpenMeteoLocation | null | undefined, expectedHour: string): Weather | null {
@@ -1007,8 +1034,25 @@ function readOutPath(): string {
   return resolve(values.out);
 }
 
+/**
+ * The error's message plus the chain of causes behind it. Node's fetch throws a
+ * bare "fetch failed" and puts the real reason (e.g. "getaddrinfo ENOTFOUND",
+ * "ECONNRESET") in `error.cause`, so without this the logs can't say why.
+ */
 function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  const parts: string[] = [];
+  let current: unknown = error;
+  while (current !== undefined && current !== null && parts.length < 5) {
+    if (current instanceof Error) {
+      const code = (current as { code?: unknown }).code;
+      parts.push(typeof code === 'string' ? `${current.message} [${code}]` : current.message);
+      current = current.cause;
+    } else {
+      parts.push(String(current));
+      break;
+    }
+  }
+  return parts.join(' ← caused by: ');
 }
 
 function sleep(ms: number): Promise<void> {
