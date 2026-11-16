@@ -28,6 +28,7 @@
     "PSLV XL": "PSLV-XL",
     "GSLV Mk II": "GSLV Mk II",
     "GSLV Mk. II": "GSLV Mk II",
+    "Mir": "Mir",
     "LVM-3 (GSLV Mk III)": "LVM-3（GSLV Mk III）",
     "Launch Vehicle Mark-3 (GSLV Mk III)": "LVM-3（GSLV Mk III）",
 
@@ -62,6 +63,7 @@
     "Tanegashima Space Center, Japan": "日本种子岛宇宙中心",
     "Rocket Lab Launch Complex 1, Mahia Peninsula, New Zealand": "新西兰马希亚半岛火箭实验室1号发射场",
     "Andøya Spaceport": "挪威安岛航天港",
+    "Yoshinobu Launch Complex LP-2": "吉信发射场LP-2",
     "Sea Launch": "海上发射",
 
     "Low Earth Orbit": "近地轨道",
