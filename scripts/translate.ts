@@ -20,7 +20,7 @@
 import { readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
-import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod';
+import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
 import type { Launch, LaunchData } from '../src/lib/types.ts';
 
@@ -30,7 +30,8 @@ const LAUNCHES_PATH = resolve('data/launches.json');
 const GLOSSARY_PATH = resolve('data/glossary.zh.json');
 const TRANSLATIONS_PATH = resolve('data/translations.zh.json');
 
-const MODEL = 'claude-opus-5-5';
+/** Haiku: the smallest, cheapest current Claude model, plenty for short news translation. */
+const MODEL = 'claude-haiku-5-5';
 /** Texts per request. Small enough that one bad answer costs little. */
 const BATCH_SIZE = 30;
 /** A hard ceiling per run, so a bug can never send thousands of texts. */
@@ -157,14 +158,11 @@ function systemPrompt(glossary: Glossary): string {
 
 async function translateBatch(client: Anthropic, glossary: Glossary, items: SourceText[]): Promise<Map<string, string>> {
   const payload = items.map((item, id) => ({ id, kind: item.kind, text: item.text }));
-  const response = await client.beta.messages.parse({
+  const response = await client.messages.parse({
     model: MODEL,
     max_tokens: 16000,
-    betas: ['server-side-fallback-2026-07-01'],
-    // If the model declines (unlikely for launch news), the API retries on a recommended fallback model.
-    fallbacks: 'default',
     // Translation needs little reasoning; low effort keeps it fast and cheap.
-    output_config: { effort: 'low', format: betaZodOutputFormat(TranslationBatch) },
+    output_config: { effort: 'low', format: zodOutputFormat(TranslationBatch) },
     system: systemPrompt(glossary),
     messages: [
       {
@@ -174,6 +172,7 @@ async function translateBatch(client: Anthropic, glossary: Glossary, items: Sour
     ],
   });
 
+  // Haiku has no automatic fallback model; a declined batch just stays English and is retried next run.
   if (response.stop_reason === 'refusal') throw new Error('the model declined this batch');
   if (response.stop_reason === 'max_tokens') throw new Error('the answer was cut off (max_tokens)');
   const parsed = response.parsed_output;
