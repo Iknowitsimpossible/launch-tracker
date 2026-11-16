@@ -15,7 +15,7 @@ function toIcsDate(date: Date): string {
 
 /** Characters with special meaning in the format must be escaped. */
 function escapeText(text: string): string {
-  return text.replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+  return text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 }
 
 /** Lines may not be longer than 75 bytes; longer ones continue on a new line that starts with a space. */
