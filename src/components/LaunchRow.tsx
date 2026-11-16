@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { localizedPath, type Locale } from '@/lib/locale';
 import type { Launch } from '@/lib/types';
 import { LocalTime } from './LocalTime';
+import { SourceText } from './SourceText';
 import { StatusTag } from './StatusTag';
 import { Thumbnail } from './Thumbnail';
 import styles from './LaunchRow.module.css';
@@ -15,9 +16,12 @@ export function LaunchRow({ launch, locale }: { launch: Launch; locale: Locale }
           <Thumbnail launch={launch} locale={locale} />
         </span>
         <span className={styles.text}>
-          <b>{launch.name}</b>
+          <b>
+            <SourceText text={launch.name} locale={locale} />
+          </b>
           <small>
-            {launch.rocket.name} · {launch.provider.abbrev} · {launch.pad.locationName}
+            <SourceText text={launch.rocket.name} locale={locale} /> · {launch.provider.abbrev} ·{' '}
+            <SourceText text={launch.pad.locationName} locale={locale} />
           </small>
         </span>
         <span className={styles.when}>

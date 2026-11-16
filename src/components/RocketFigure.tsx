@@ -2,6 +2,7 @@ import type { Locale } from '@/lib/locale';
 import type { Booster, Launch, Rocket } from '@/lib/types';
 import { compareHeight, compareMass, compareThrust, ordinal, plural } from '@/lib/comparisons';
 import { RocketOutline } from './drawings/RocketOutline';
+import { SourceText } from './SourceText';
 import styles from './RocketFigure.module.css';
 
 /** More markers than this turn into a long ribbon, so we draw the latest 30 only. */
@@ -24,7 +25,11 @@ export function RocketFigure({ launch, locale }: { launch: Launch; locale: Local
       <RocketOutline heightLabel={heightLabel} locale={locale} />
       <div className={styles.bigstats}>
         {/* With no numbers at all, the rocket's name stands in for them. */}
-        {stats.length === 0 && <p className={styles.rocketName}>{rocket.fullName || rocket.name}</p>}
+        {stats.length === 0 && (
+          <p className={styles.rocketName}>
+            <SourceText text={rocket.fullName || rocket.name} locale={locale} />
+          </p>
+        )}
 
         {stats.map((stat) => (
           <div key={stat.caption}>

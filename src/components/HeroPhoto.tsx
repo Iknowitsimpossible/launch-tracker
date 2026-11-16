@@ -4,6 +4,7 @@ import type { Locale } from '@/lib/locale';
 import { useState } from 'react';
 import { isHttpUrl } from '@/lib/links';
 import type { Launch } from '@/lib/types';
+import { localizeName } from '@/lib/translate';
 import { RemoteImage } from './RemoteImage';
 import styles from './HeroPhoto.module.css';
 
@@ -16,7 +17,7 @@ export function HeroPhoto({ launch, locale }: { launch: Launch; locale: Locale }
 
   return (
     <figure className={styles.photo}>
-      <RemoteImage src={image.url} alt={chinese ? `${launch.rocket.fullName} 火箭照片` : `Photo of a ${launch.rocket.fullName} rocket`} onFailed={() => setFailed(true)} />
+      <RemoteImage src={image.url} alt={chinese ? `${localizeName(launch.rocket.fullName, locale)} 火箭照片` : `Photo of a ${launch.rocket.fullName} rocket`} onFailed={() => setFailed(true)} />
       {image.credit && <figcaption className={styles.credit}>{chinese ? '图片来源：' : 'Photo: '}{image.credit}</figcaption>}
     </figure>
   );

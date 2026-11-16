@@ -28,6 +28,7 @@ Use it to decide whether a launch is worth watching, to put one in your calendar
 - **Uncertain dates are shown as uncertain.** If only the day is known, the page shows the date with no time and the calendar event is all-day. If only a rough date is known, only the month and year are shown.
 - **Facts are only as complete as the source.** A missing field (a classified payload's purpose, a booster that isn't tracked) is left blank, never filled in.
 - **No flight trajectories.** The public data doesn't include them.
+- **Chinese wording can lag by an hour.** New text from the source is translated on the next hourly run. Until then it shows in English on the Chinese pages, marked 原文 (original text).
 - **Needs a connection.** The site can be installed but doesn't work offline. The launch facts are in the HTML itself, while local times and countdowns need JavaScript. Without JavaScript, times show in UTC.
 
 ## How it works
@@ -40,6 +41,8 @@ GitHub Actions (hourly cron, every push to main, or manual run)
        Launch Library 2: 2 requests (upcoming + previous, detailed mode)
        Open-Meteo:       1 request covering every eligible launch
        normalize -> validate against src/lib/types.ts -> data/launches.json
+  -> scripts/translate.ts (best effort)
+       glossary + cache first, Claude API only for new text -> data/translations.zh.json
   -> next build (static export) -> out/
   -> GitHub Pages
 ```
@@ -53,12 +56,18 @@ GitHub Actions (hourly cron, every push to main, or manual run)
 
 **Failure handling:** if Launch Library fails on an hourly run, the job stops and the previously published site stays up. Stale data is better than a broken page. If the weather request fails, the site is published without weather. If the fetch fails on a code push, the build falls back to the snapshot committed in `data/launches.json`.
 
+**Chinese version** ([scripts/translate.ts](scripts/translate.ts)): `/zh/` is built from the same `launches.json`, so times, statuses and links match the English pages exactly. Only the wording differs.
+- Liftoff's own labels are written in Chinese in the components.
+- Text from Launch Library is looked up in three places, in order: [data/glossary.zh.json](data/glossary.zh.json), the reviewed names for rockets, companies and launch sites; then `data/translations.zh.json`, machine translations cached between runs; then the English original, labelled 原文.
+- Only text the cache hasn't seen goes to the Claude API, in batches of 30. The glossary is included in every request, so names stay consistent inside sentences too. Mission names and serials stay as published.
+- The cache persists between runs in the GitHub Actions cache, not in git, so there are no hourly commits. If translation fails or no API key is set, the site still deploys and the untranslated text shows in English.
+
 **Front end:** Next.js with `output: "export"` pre-renders the home page and one page per launch. Visitor-specific parts run in the browser:
 - **Local times** are converted from UTC after the page loads. Before that they show UTC, so the pre-rendered HTML is correct, just not local.
 - **Countdowns** on a page all share one one-second timer.
 - **Calendar events** (`.ics`) are generated in the browser.
 
-**Built with:** Next.js 16, React 19, TypeScript, and CSS Modules. Hosted on GitHub Pages. Data from [Launch Library 2](https://thespacedevs.com/llapi) and [Open-Meteo](https://open-meteo.com). Neither API needs a key.
+**Built with:** Next.js 16, React 19, TypeScript, and CSS Modules. Hosted on GitHub Pages. Data from [Launch Library 2](https://thespacedevs.com/llapi) and [Open-Meteo](https://open-meteo.com). Neither of those needs a key. Translation uses the [Claude API](https://platform.claude.com), which reads `ANTHROPIC_API_KEY` from a GitHub Actions secret.
 
 ## Running it yourself
 
@@ -74,6 +83,7 @@ npm install
 |---|---|
 | `npm run fetch-data` | Downloads fresh launches and weather into `data/launches.json` |
 | `npm run dev` | Starts the Next.js development server |
+| `node scripts/translate.ts` | Translates new text into `data/translations.zh.json` (needs `ANTHROPIC_API_KEY`; without it, untranslated text stays English) |
 | `npm run build` | Builds the static site into `out/` |
 | `npm run lint` | Runs ESLint |
 
@@ -84,6 +94,7 @@ The site's address prefix comes from `NEXT_PUBLIC_BASE_PATH`. The deploy workflo
 ## Project structure
 
 - `scripts/fetch-launches.ts`: the data job: fetch, reshape, validate, write.
+- `scripts/translate.ts`, `data/glossary.zh.json`: the Chinese translation step and its reviewed names.
 - `src/lib/types.ts`: the data shape shared by the data job and the pages.
 - `src/app/`: the home page, the per-launch pages (`launch/[slug]/`), and the web app manifest.
 - `src/components/`: the page sections, including the mission drawings and the rocket figure.

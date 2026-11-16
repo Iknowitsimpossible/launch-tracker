@@ -15,3 +15,9 @@ export function firstSentences(text: string, count: number): string {
   }
   return sentences.slice(0, count).join(' ');
 }
+
+/** The first `count` sentences of Chinese text, which end at 。！or？ with no space after. */
+export function firstChineseSentences(text: string, count: number): string {
+  const sentences = text.trim().match(/[^。！？]+[。！？]?/g) ?? [];
+  return sentences.slice(0, count).join('');
+}

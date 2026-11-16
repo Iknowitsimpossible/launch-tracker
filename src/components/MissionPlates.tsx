@@ -5,6 +5,7 @@ import { CrewDrawing } from './drawings/CrewDrawing';
 import { DestinationDrawing } from './drawings/DestinationDrawing';
 import { LandingDrawing } from './drawings/LandingDrawing';
 import { PayloadDrawing } from './drawings/PayloadDrawing';
+import { localizeName } from '@/lib/translate';
 import styles from './MissionPlates.module.css';
 
 /**
@@ -96,7 +97,7 @@ const CHINESE_ORBIT_NAMES = new Map([
 function spacecraftDestination(name: string | null | undefined, locale: Locale): string {
   if (locale === 'en') return name ?? 'Destination';
   if (name === 'International Space Station') return '国际空间站';
-  return name ? CHINESE_ORBIT_NAMES.get(name) ?? name : '目的地';
+  return name ? CHINESE_ORBIT_NAMES.get(name) ?? localizeName(name, locale) : '目的地';
 }
 
 function destinationLabel(mission: Mission, locale: Locale): string {
@@ -189,7 +190,7 @@ const CHINESE_MISSION_TYPES = new Map([
  */
 function payloadCaption(mission: Mission, spacecraft: Spacecraft | null, locale: Locale): string {
   if (spacecraft && (mission.payloadKind === 'crew' || mission.payloadKind === 'cargo')) {
-    return spacecraft.name;
+    return localizeName(spacecraft.name, locale);
   }
   const type = mission.type?.trim();
   const label = PAYLOAD_NAMES[mission.payloadKind].toLowerCase();
@@ -234,7 +235,8 @@ function landingCaption(landing: Landing, locale: Locale): string {
   const where: string[] = [];
   if (landing.locationName) {
     // Ships have names, so quote them; a "Landing Zone 40" is just a place.
-    where.push(kind === 'droneship' ? `"${landing.locationName}"` : landing.locationName);
+    const place = localizeName(landing.locationName, locale);
+    where.push(kind === 'droneship' ? `"${place}"` : place);
   }
   if (landing.downrangeKm !== null && Number.isFinite(landing.downrangeKm)) {
     const distance = formatKm(landing.downrangeKm);

@@ -4,6 +4,7 @@ import type { Locale } from '@/lib/locale';
 import { useState } from 'react';
 import { isHttpUrl } from '@/lib/links';
 import type { Launch } from '@/lib/types';
+import { localizeName } from '@/lib/translate';
 import { RemoteImage } from './RemoteImage';
 import styles from './Thumbnail.module.css';
 
@@ -16,7 +17,7 @@ export function Thumbnail({ launch, locale }: { launch: Launch; locale: Locale }
 
   return (
     <div className={styles.frame}>
-      <RemoteImage src={url} alt={locale === 'zh-Hans' ? `${launch.rocket.name} 发射照片` : `${launch.rocket.name} launch photo`} lazy onFailed={() => setFailed(true)} />
+      <RemoteImage src={url} alt={locale === 'zh-Hans' ? `${localizeName(launch.rocket.name, locale)} 发射照片` : `${launch.rocket.name} launch photo`} lazy onFailed={() => setFailed(true)} />
     </div>
   );
 }
