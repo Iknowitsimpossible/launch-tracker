@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/locale';
 import type { ReactNode } from 'react';
 import type { LandingKind } from '@/lib/types';
 import pen from './pen.module.css';
@@ -11,6 +12,7 @@ import { PlateSvg } from './PlateSvg';
 
 interface Drawing {
   label: string;
+  chineseLabel: string;
   shapes: ReactNode;
 }
 
@@ -33,6 +35,7 @@ function waves(y: number) {
 const DRAWINGS: Record<LandingKind, Drawing> = {
   droneship: {
     label: 'A booster standing on a barge at sea',
+    chineseLabel: '一枚助推器立在海上的回收船上',
     shapes: (
       <>
         {descentLine}
@@ -44,6 +47,7 @@ const DRAWINGS: Record<LandingKind, Drawing> = {
   },
   landing_pad: {
     label: 'A booster standing on a round landing pad on the ground',
+    chineseLabel: '一枚助推器立在地面的圆形着陆区内',
     shapes: (
       <>
         {descentLine}
@@ -55,6 +59,7 @@ const DRAWINGS: Record<LandingKind, Drawing> = {
   },
   ocean: {
     label: 'A booster coming down under a parachute into the sea',
+    chineseLabel: '一枚助推器借助降落伞降落到海中',
     shapes: (
       <>
         <path className={pen.hotStroke} d="M24 14Q40-4 56 14Q40 9 24 14" />
@@ -66,6 +71,7 @@ const DRAWINGS: Record<LandingKind, Drawing> = {
   },
   expended: {
     label: 'A dashed booster tumbling into the sea, not recovered',
+    chineseLabel: '一枚以虚线绘制的助推器翻滚落海，未回收',
     shapes: (
       <>
         <rect className={pen.dash} x="33" y="12" width="6" height="28" transform="rotate(35 36 26)" />
@@ -76,6 +82,7 @@ const DRAWINGS: Record<LandingKind, Drawing> = {
   },
   other: {
     label: 'A booster landing on an unknown surface',
+    chineseLabel: '一枚助推器在未知地点着陆',
     shapes: (
       <>
         {descentLine}
@@ -86,7 +93,7 @@ const DRAWINGS: Record<LandingKind, Drawing> = {
   },
 };
 
-export function LandingDrawing({ kind }: { kind: LandingKind }) {
+export function LandingDrawing({ kind, locale }: { kind: LandingKind; locale: Locale }) {
   const drawing = DRAWINGS[kind];
-  return <PlateSvg label={drawing.label}>{drawing.shapes}</PlateSvg>;
+  return <PlateSvg label={locale === 'zh-Hans' ? drawing.chineseLabel : drawing.label}>{drawing.shapes}</PlateSvg>;
 }

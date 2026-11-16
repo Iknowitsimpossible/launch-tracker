@@ -1,4 +1,5 @@
 import { isHttpUrl } from './links';
+import type { Locale } from './locale';
 import type { Launch } from './types';
 
 const LINE_END = '\r\n'; // the calendar format requires CRLF
@@ -45,7 +46,8 @@ function foldLine(line: string): string {
  * - day only: an all-day event.
  * Not meant for 'approximate' launches (there is no date to put in a calendar).
  */
-export function buildIcs(launch: Launch, now: Date = new Date()): string {
+export function buildIcs(launch: Launch, now: Date = new Date(), locale: Locale = 'en'): string {
+  const chinese = locale === 'zh-Hans';
   const start = new Date(launch.net);
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Launch tracker//EN', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT'];
 
@@ -64,12 +66,14 @@ export function buildIcs(launch: Launch, now: Date = new Date()): string {
     lines.push(`DTEND;VALUE=DATE:${toIcsDate(nextDay)}`);
   }
 
-  lines.push(`SUMMARY:${escapeText(`Launch: ${launch.name} (${launch.rocket.fullName})`)}`);
+  lines.push(`SUMMARY:${escapeText(`${chinese ? '发射任务：' : 'Launch: '}${launch.name} (${launch.rocket.fullName})`)}`);
   lines.push(`LOCATION:${escapeText(`${launch.pad.name}, ${launch.pad.locationName}`)}`);
 
-  const description = [`${launch.rocket.fullName} by ${launch.provider.name}.`];
+  const description = [chinese
+    ? `${launch.provider.name} 使用 ${launch.rocket.fullName} 执行发射任务。`
+    : `${launch.rocket.fullName} by ${launch.provider.name}.`];
   const webcast = launch.webcasts.find((link) => isHttpUrl(link.url));
-  if (webcast) description.push(`Watch: ${webcast.url}`);
+  if (webcast) description.push(`${chinese ? '观看：' : 'Watch: '}${webcast.url}`);
   lines.push(`DESCRIPTION:${escapeText(description.join('\n'))}`);
 
   lines.push('END:VEVENT', 'END:VCALENDAR');

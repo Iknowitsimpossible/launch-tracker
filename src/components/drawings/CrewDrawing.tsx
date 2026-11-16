@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/locale';
 import pen from './pen.module.css';
 import { PlateSvg } from './PlateSvg';
 
@@ -71,10 +72,15 @@ function Helmet({ spot, visorClassName }: { spot: HelmetSpot; visorClassName?: s
  * Who is aboard. Uncrewed: four dashed (empty) helmets, exactly as in the mockup.
  * Crewed: one solid-line helmet per astronaut; the commander's visor is the accent.
  */
-export function CrewDrawing({ crewCount, commanderIndex }: { crewCount: number; commanderIndex: number }) {
+export function CrewDrawing({ crewCount, commanderIndex, locale }: {
+  crewCount: number;
+  commanderIndex: number;
+  locale: Locale;
+}) {
+  const chinese = locale === 'zh-Hans';
   if (crewCount === 0) {
     return (
-      <PlateSvg label="Four empty, dashed helmets: no one aboard">
+      <PlateSvg label={chinese ? '四顶虚线头盔，表示无人搭乘' : 'Four empty, dashed helmets: no one aboard'}>
         {layoutHelmets(4).map((spot, i) => (
           <EmptyHelmet key={i} spot={spot} />
         ))}
@@ -85,8 +91,9 @@ export function CrewDrawing({ crewCount, commanderIndex }: { crewCount: number; 
   const drawn = Math.min(crewCount, MAX_HELMETS);
   // If the commander is listed beyond the helmets we draw, highlight the first one.
   const highlighted = commanderIndex < drawn ? commanderIndex : 0;
-  const label =
-    crewCount === 1 ? 'One astronaut helmet' : `${crewCount} astronaut helmets, the commander's highlighted`;
+  const label = chinese
+    ? (crewCount === 1 ? '一顶航天员头盔' : `${crewCount} 顶航天员头盔，其中指令长的头盔以强调色显示`)
+    : (crewCount === 1 ? 'One astronaut helmet' : `${crewCount} astronaut helmets, the commander's highlighted`);
   return (
     <PlateSvg label={label}>
       {layoutHelmets(drawn).map((spot, i) => (

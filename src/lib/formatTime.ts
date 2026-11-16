@@ -1,10 +1,12 @@
+import type { Locale } from './locale';
 import type { Launch } from './types';
 
 interface FormatOptions {
   /** Add the zone abbreviation, e.g. "PST". */
   withZone: boolean;
-  /** Fixed locale and zone, used for the placeholder shown before the browser takes over. */
+  /** Use UTC for the placeholder shown before the browser takes over. */
   fixed?: boolean;
+  locale?: Locale;
 }
 
 /**
@@ -16,9 +18,10 @@ interface FormatOptions {
  */
 export function formatLaunchTime(iso: string, precision: Launch['netPrecision'], options: FormatOptions): string {
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return 'Date unknown';
+  const chinese = options.locale === 'zh-Hans';
+  if (Number.isNaN(date.getTime())) return chinese ? '日期未知' : 'Date unknown';
 
-  const locale = options.fixed ? 'en-US' : undefined;
+  const locale = chinese ? 'zh-Hans' : 'en-US';
 
   if (precision === 'approximate') {
     return date.toLocaleDateString(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });

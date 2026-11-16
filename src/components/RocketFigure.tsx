@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/locale';
 import type { Booster, Launch, Rocket } from '@/lib/types';
 import { compareHeight, compareMass, compareThrust, ordinal, plural } from '@/lib/comparisons';
 import { RocketOutline } from './drawings/RocketOutline';
@@ -13,14 +14,14 @@ const MAX_FLIGHT_MARKERS = 30;
  * Every line is optional: a missing number simply skips its row, so the figure
  * never shows "null", "NaN" or an empty box.
  */
-export function RocketFigure({ launch }: { launch: Launch }) {
+export function RocketFigure({ launch, locale }: { launch: Launch; locale: Locale }) {
   const { rocket, booster } = launch;
-  const stats = buildStats(rocket);
+  const stats = buildStats(rocket, locale);
   const heightLabel = isPositive(rocket.heightM) ? `${formatMetres(rocket.heightM)} m` : null;
 
   return (
     <div className={styles.rocket}>
-      <RocketOutline heightLabel={heightLabel} />
+      <RocketOutline heightLabel={heightLabel} locale={locale} />
       <div className={styles.bigstats}>
         {/* With no numbers at all, the rocket's name stands in for them. */}
         {stats.length === 0 && <p className={styles.rocketName}>{rocket.fullName || rocket.name}</p>}
@@ -32,8 +33,8 @@ export function RocketFigure({ launch }: { launch: Launch }) {
           </div>
         ))}
 
-        <BoosterLine booster={booster} reusable={rocket.reusable} />
-        <TrackRecord rocket={rocket} />
+        <BoosterLine booster={booster} reusable={rocket.reusable} locale={locale} />
+        <TrackRecord rocket={rocket} locale={locale} />
       </div>
     </div>
   );
@@ -49,32 +50,33 @@ interface Stat {
 }
 
 /** Builds only the rows whose numbers are known. */
-function buildStats(rocket: Rocket): Stat[] {
+function buildStats(rocket: Rocket, locale: Locale): Stat[] {
+  const chinese = locale === 'zh-Hans';
   const stats: Stat[] = [];
   if (isPositive(rocket.heightM)) {
     stats.push({
       value: `${formatMetres(rocket.heightM)} m`,
-      caption: withComparison('tall', compareHeight(rocket.heightM)),
+      caption: withComparison(chinese ? '高度' : 'tall', compareHeight(rocket.heightM, locale), locale),
     });
   }
   if (isPositive(rocket.liftoffThrustKN)) {
     stats.push({
       value: `${Math.round(rocket.liftoffThrustKN).toLocaleString('en-US')} kN`,
-      caption: withComparison('liftoff thrust', compareThrust(rocket.liftoffThrustKN)),
+      caption: withComparison(chinese ? '起飞推力' : 'liftoff thrust', compareThrust(rocket.liftoffThrustKN, locale), locale),
     });
   }
   if (isPositive(rocket.leoCapacityKg)) {
     stats.push({
       value: formatMass(rocket.leoCapacityKg),
-      caption: withComparison('to low orbit', compareMass(rocket.leoCapacityKg)),
+      caption: withComparison(chinese ? '近地轨道运载能力' : 'to low orbit', compareMass(rocket.leoCapacityKg, locale), locale),
     });
   }
   return stats;
 }
 
 /** "tall" + "about a 20-storey building" -> "tall, about a 20-storey building". */
-function withComparison(what: string, comparison: string | null): string {
-  return comparison ? `${what}, ${comparison}` : what;
+function withComparison(what: string, comparison: string | null, locale: Locale): string {
+  return comparison ? `${what}${locale === 'zh-Hans' ? '，' : ', '}${comparison}` : what;
 }
 
 /** 70 -> "70", 41.06 -> "41", 8.4 -> "8.4". Decimals only matter for small rockets. */
@@ -101,19 +103,22 @@ function isPositive(value: number | null): value is number {
 // Booster and track record
 // ---------------------------------------------------------------------------
 
-function BoosterLine({ booster, reusable }: { booster: Booster | null; reusable: boolean }) {
+function BoosterLine({ booster, reusable, locale }: { booster: Booster | null; reusable: boolean; locale: Locale }) {
+  const chinese = locale === 'zh-Hans';
   if (!booster) {
     // No booster record: only worth saying something when the rocket is single-use.
-    return reusable ? null : <span className={styles.note}>Single-use rocket</span>;
+    return reusable ? null : <span className={styles.note}>{chinese ? '一次性运载火箭' : 'Single-use rocket'}</span>;
   }
 
   const flights = booster.flightNumber;
   if (flights === null || !Number.isInteger(flights) || flights < 1) {
-    return <span className={styles.note}>Booster {booster.serial}</span>;
+    return <span className={styles.note}>{chinese ? '助推器' : 'Booster'} {booster.serial}</span>;
   }
 
   const drawn = Math.min(flights, MAX_FLIGHT_MARKERS);
-  const capNote = flights > MAX_FLIGHT_MARKERS ? ` (the latest ${MAX_FLIGHT_MARKERS} shown)` : '';
+  const capNote = flights > MAX_FLIGHT_MARKERS
+    ? (chinese ? `（显示最近 ${MAX_FLIGHT_MARKERS} 次）` : ` (the latest ${MAX_FLIGHT_MARKERS} shown)`)
+    : '';
   return (
     <div>
       {/* One marker per flight; the last (this launch) in the accent colour.
@@ -124,19 +129,22 @@ function BoosterLine({ booster, reusable }: { booster: Booster | null; reusable:
         ))}
       </div>
       <span className={styles.note}>
-        Booster {booster.serial}, on its {ordinal(flights)} flight{capNote}
+        {chinese ? `助推器 ${booster.serial}，第 ${flights} 次飞行` : `Booster ${booster.serial}, on its ${ordinal(flights)} flight`}
+        {capNote}
       </span>
     </div>
   );
 }
 
 /** "645 of 646 launches successful", only when both counts are known. */
-function TrackRecord({ rocket }: { rocket: Rocket }) {
+function TrackRecord({ rocket, locale }: { rocket: Rocket; locale: Locale }) {
   const { successfulLaunches, totalLaunches } = rocket;
   if (successfulLaunches === null || totalLaunches === null || totalLaunches < 1) return null;
   return (
     <span className={styles.note}>
-      {successfulLaunches.toLocaleString('en-US')} of {plural(totalLaunches, 'launch', 'launches')} successful
+      {locale === 'zh-Hans'
+        ? `共发射 ${totalLaunches.toLocaleString('zh-Hans')} 次，成功 ${successfulLaunches.toLocaleString('zh-Hans')} 次`
+        : `${successfulLaunches.toLocaleString('en-US')} of ${plural(totalLaunches, 'launch', 'launches')} successful`}
     </span>
   );
 }
