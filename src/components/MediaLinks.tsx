@@ -3,6 +3,7 @@ import { isHttpUrl } from '@/lib/links';
 import type { Launch } from '@/lib/types';
 import { ButtonLink } from './ButtonLink';
 import { Panel } from './Panel';
+import { SourceText } from './SourceText';
 import styles from './MediaLinks.module.css';
 
 /** Webcasts and info pages. Renders nothing when there are no usable links. */
@@ -17,13 +18,13 @@ export function MediaLinks({ launch, locale }: { launch: Launch; locale: Locale 
         {webcasts.map((link, index) => (
           <ButtonLink key={link.url} href={link.url} primary={index === 0}>
             <span aria-hidden="true">▶ </span>
-            {link.title}
+            <SourceText text={link.title} locale={locale} />
             {link.source ? ` (${link.source})` : ''}
           </ButtonLink>
         ))}
         {infoLinks.map((link) => (
           <ButtonLink key={link.url} href={link.url}>
-            {link.title}
+            <SourceText text={link.title} locale={locale} />
             {link.source ? ` (${link.source})` : ''}
           </ButtonLink>
         ))}

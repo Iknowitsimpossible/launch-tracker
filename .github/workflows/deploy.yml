@@ -62,6 +62,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Translations from earlier runs, so each run only sends new text to the
+      # translator. The newest cache wins over the snapshot in the repo. If
+      # GitHub has evicted it, the only cost is translating everything again.
+      - name: Restore cached translations
+        uses: actions/cache/restore@v4
+        with:
+          path: data/translations.zh.json
+          key: translations-zh-${{ github.run_id }}
+          restore-keys: translations-zh-
+
+      # Never blocks the deploy: text without a translation is shown in
+      # English on the Chinese pages, labelled 原文, and retried next run.
+      - name: Translate new text into Chinese (best effort)
+        run: node scripts/translate.ts
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Save translations for the next run
+        uses: actions/cache/save@v4
+        with:
+          path: data/translations.zh.json
+          key: translations-zh-${{ github.run_id }}
+
       - name: Build the static site
         run: npm run build
         env:

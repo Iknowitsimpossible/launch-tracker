@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getAllLaunches, getLaunchBySlug } from '@/lib/launches';
 import { localizedPath, type Locale } from '@/lib/locale';
 import { isFinished } from '@/lib/status';
+import { localizeName } from '@/lib/translate';
 import { LaunchDetail } from './LaunchDetail';
 import { SiteFrame } from './SiteFrame';
 import styles from './LaunchPage.module.css';
@@ -12,12 +13,14 @@ export function launchStaticParams() {
   return getAllLaunches().map((launch) => ({ slug: launch.slug }));
 }
 
-export function launchMetadata(slug: string): Metadata {
+export function launchMetadata(slug: string, locale: Locale = 'en'): Metadata {
   const launch = getLaunchBySlug(slug);
   if (!launch) return {};
   return {
-    title: launch.name,
-    description: `${launch.rocket.fullName} · ${launch.provider.name} · ${launch.pad.locationName}`,
+    title: localizeName(launch.name, locale),
+    description: [launch.rocket.fullName, launch.provider.name, launch.pad.locationName]
+      .map((name) => localizeName(name, locale))
+      .join(' · '),
   };
 }
 

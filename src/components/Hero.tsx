@@ -8,6 +8,7 @@ import { Countdown } from './Countdown';
 import { HeroPhoto } from './HeroPhoto';
 import { LocalTime } from './LocalTime';
 import { Outcome } from './Outcome';
+import { SourceText } from './SourceText';
 import { StatusTag } from './StatusTag';
 import styles from './Hero.module.css';
 
@@ -31,9 +32,12 @@ export function Hero({ launch, eyebrow, locale }: HeroProps) {
       <HeroPhoto launch={launch} locale={locale} />
       <div className={styles.body}>
         <span className={styles.eyebrow}>{eyebrow}</span> <StatusTag launch={launch} locale={locale} />
-        <h1>{launch.name}</h1>
+        <h1>
+          <SourceText text={launch.name} locale={locale} />
+        </h1>
         <p className={styles.sub}>
-          {launch.rocket.fullName} · {launch.provider.name}
+          <SourceText text={launch.rocket.fullName} locale={locale} /> ·{' '}
+          <SourceText text={launch.provider.name} locale={locale} />
         </p>
 
         {liftedOff ? <Outcome launch={launch} locale={locale} /> : showCountdown ? <Countdown targetIso={launch.net} locale={locale} /> : null}
@@ -44,12 +48,13 @@ export function Hero({ launch, eyebrow, locale }: HeroProps) {
           </strong>
           {launch.netPrecision === 'day' && (chinese ? '（时间待定）' : ' (time not set yet)')}
           <br />
-          {launch.pad.name} · {launch.pad.locationName}
+          <SourceText text={launch.pad.name} locale={locale} /> ·{' '}
+          <SourceText text={launch.pad.locationName} locale={locale} />
         </p>
         {launch.latestUpdate && (
           <p className={styles.update}>
             {chinese ? '最新动态：' : 'Update: '}
-            <span lang="en">{launch.latestUpdate.comment}</span>
+            <SourceText text={launch.latestUpdate.comment} locale={locale} kind="prose" />
           </p>
         )}
 
