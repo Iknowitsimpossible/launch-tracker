@@ -4,7 +4,7 @@ A rocket launch tracker for anyone who wants to know what's flying next, where i
 
 **Live site:** https://iknowitsimpossible.github.io/launch-tracker/
 
-<!-- TODO: add screenshot at docs/screenshot.png -->
+![Liftoff home page: the next launch with its photo, countdown, local time and launch site](docs/screenshot.png)
 
 ## What it does
 
