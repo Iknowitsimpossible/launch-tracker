@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Liftoff
 
-## Getting Started
+A worldwide rocket launch tracker. It shows what launches next, where, in what weather, and how to watch it, and it rebuilds itself from public launch data every hour.
 
-First, run the development server:
+**Live site:** https://iknowitsimpossible.github.io/launch-tracker/
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![Liftoff home page: the next launch with its photo, countdown, local time and launch site](docs/screenshot.png)
+
+## What it does
+
+Liftoff covers launches by every provider worldwide: up to 25 in the next 30 days, plus all launches from the past 30 days with their outcome. Each launch gets its own page:
+
+- **Time:** the launch time in the visitor's own time zone, a live countdown, the latest schedule note from the provider (for example a delay), and a button that downloads an `.ics` calendar event.
+- **Pad weather:** the forecast for the hour nearest liftoff, with wind speed and direction, gusts, visibility, cloud cover and chance of rain.
+- **Mission:** the destination orbit, whether there's a crew (with names), the payload type, and the booster landing plan (droneship, landing pad or expended), shown as line drawings.
+- **Rocket:** the maker, a description, height, liftoff thrust, payload to low Earth orbit, the rocket's success record, and the booster's serial and flight number.
+- **Outcome:** for past launches, success, failure or partial failure, with the published reason for a failure.
+- **Media:** official livestream links, mission pages, and a launch photo with credit.
+
+The site can be installed to a phone or desktop home screen as a web app.
+
+## When to use it, and its limits
+
+Use it to decide whether a launch is worth watching, to put one in your calendar, or to catch up on the past month. Know these limits:
+
+- **Data is up to about an hour old.** The site rebuilds hourly. A scrub or delay announced minutes before liftoff may not show yet, so check the provider's livestream on launch day.
+- **Weather appears only when a forecast is possible:** for launches within 16 days, with an exact launch time, and with known pad coordinates. Otherwise the weather panel says no forecast is available yet, instead of guessing.
+- **Uncertain dates are shown as uncertain.** If only the day is known, the page shows the date with no time and the calendar event is all-day. If only a rough date is known, only the month and year are shown.
+- **Facts are only as complete as the source.** A missing field (a classified payload's purpose, a booster that isn't tracked) is left blank, never filled in.
+- **No flight trajectories.** The public data doesn't include them.
+- **Needs a connection.** The site can be installed but doesn't work offline. The launch facts are in the HTML itself, while local times and countdowns need JavaScript. Without JavaScript, times show in UTC.
+
+## How it works
+
+Liftoff is a static site: there is no server or database, just a data file rebuilt into plain HTML every hour.
+
+```
+GitHub Actions (hourly cron, every push to main, or manual run)
+  -> scripts/fetch-launches.ts
+       Launch Library 2: 2 requests (upcoming + previous, detailed mode)
+       Open-Meteo:       1 request covering every eligible launch
+       normalize -> validate against src/lib/types.ts -> data/launches.json
+  -> next build (static export) -> out/
+  -> GitHub Pages
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Data job** ([scripts/fetch-launches.ts](scripts/fetch-launches.ts)):
+- Pools the upcoming and previous lists, removes launches that appear in both, and sorts each launch by its status: one with an outcome counts as recent. The API keeps a launch in "upcoming" for about a day after liftoff, which is why.
+- Reshapes each launch into the data shape in [src/lib/types.ts](src/lib/types.ts). Every field is always present, and anything unknown is `null`, never made up. All times are stored in UTC.
+- Gets weather for every eligible launch in one batched Open-Meteo request.
+- Checks every value against the data shape before writing, so bad API data fails the build instead of reaching the site. The file is written atomically: to a temporary file first, then renamed over the old one.
+- Stays within Launch Library's free tier of 15 requests per hour: each run uses 2 and never more than 4, retries included. A network error or server error gets one retry for both APIs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Failure handling:** if Launch Library fails on an hourly run, the job stops and the previously published site stays up. Stale data is better than a broken page. If the weather request fails, the site is published without weather. If the fetch fails on a code push, the build falls back to the snapshot committed in `data/launches.json`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Front end:** Next.js with `output: "export"` pre-renders the home page and one page per launch. Visitor-specific parts run in the browser:
+- **Local times** are converted from UTC after the page loads. Before that they show UTC, so the pre-rendered HTML is correct, just not local.
+- **Countdowns** on a page all share one one-second timer.
+- **Calendar events** (`.ics`) are generated in the browser.
 
-## Learn More
+**Built with:** Next.js 16, React 19, TypeScript, and CSS Modules. Hosted on GitHub Pages. Data from [Launch Library 2](https://thespacedevs.com/llapi) and [Open-Meteo](https://open-meteo.com). Neither API needs a key.
 
-To learn more about Next.js, take a look at the following resources:
+## Running it yourself
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Requirements: [Node.js](https://nodejs.org). The deploy workflow uses Node 26, which runs the TypeScript data script directly with no build step.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+git clone https://github.com/Iknowitsimpossible/launch-tracker.git
+cd launch-tracker
+npm install
+```
 
-## Deploy on Vercel
+| Command | What it does |
+|---|---|
+| `npm run fetch-data` | Downloads fresh launches and weather into `data/launches.json` |
+| `npm run dev` | Starts the Next.js development server |
+| `npm run build` | Builds the static site into `out/` |
+| `npm run lint` | Runs ESLint |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The repo includes a data snapshot, so the site builds without fetching. The production Launch Library API allows 15 requests per hour. When running the data script repeatedly, use the development API by setting `LL_BASE_URL=https://lldev.thespacedevs.com/2.3.0`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site's address prefix comes from `NEXT_PUBLIC_BASE_PATH`. The deploy workflow sets it to `/launch-tracker` for GitHub Pages, and it's empty everywhere else.
+
+## Project structure
+
+- `scripts/fetch-launches.ts`: the data job: fetch, reshape, validate, write.
+- `src/lib/types.ts`: the data shape shared by the data job and the pages.
+- `src/app/`: the home page, the per-launch pages (`launch/[slug]/`), and the web app manifest.
+- `src/components/`: the page sections, including the mission drawings and the rocket figure.
+- `.github/workflows/deploy.yml`: the hourly fetch, build and deploy.
