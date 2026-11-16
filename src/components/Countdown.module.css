@@ -1,0 +1,46 @@
+.countdown {
+  display: flex;
+  gap: 28px;
+  margin: 24px 0;
+}
+
+.countdown div {
+  min-width: 72px;
+}
+
+.countdown b {
+  display: block;
+  font-family: var(--head);
+  font-size: 60px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.countdown i {
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.note {
+  margin: -12px 0 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .countdown {
+    gap: 18px;
+  }
+
+  .countdown div {
+    min-width: 0;
+  }
+
+  .countdown b {
+    font-size: 44px;
+  }
+}

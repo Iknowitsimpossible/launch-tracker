@@ -1,0 +1,29 @@
+.outcome {
+  margin: 24px 0;
+}
+
+.result {
+  font-family: var(--head);
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+}
+
+/* A failure gets a thick bar so it reads differently from a success at a glance. */
+.failed {
+  border-left: 4px solid var(--accent);
+  padding-left: 16px;
+}
+
+.reason {
+  margin-top: 10px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .result {
+    font-size: 34px;
+  }
+}

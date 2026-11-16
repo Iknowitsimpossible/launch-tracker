@@ -1,0 +1,68 @@
+/* Outline in a fixed 96px column on the left, numbers in the rest. */
+.rocket {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.bigstats {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.number {
+  display: block;
+  font-family: var(--head);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.rocketName {
+  margin: 0;
+  font-family: var(--head);
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+/* Booster flight markers: small rounded bars, wrapping onto new lines. */
+.flights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 6px 0 4px;
+}
+
+.pastFlight,
+.thisFlight {
+  width: 10px;
+  height: 20px;
+  border: 1.5px solid var(--fg);
+  border-radius: 5px 5px 2px 2px;
+}
+
+.thisFlight {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Small phones: tighten the gap and the numbers so "74,000 kN" still fits. */
+@media (max-width: 400px) {
+  .rocket {
+    gap: 14px;
+  }
+
+  .number {
+    font-size: 30px;
+  }
+}

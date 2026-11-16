@@ -1,3 +1,14 @@
+/* Design tokens. Every component uses these names; do not rename them. */
+:root {
+  --bg: #faf8f3; /* page background (warm off-white) */
+  --fg: #18181b; /* text and drawing strokes */
+  --muted: #6b6b70; /* secondary text */
+  --line: #dcd8cf; /* hairline dividers */
+  --accent: #b4311a; /* the one highlight colour */
+  --head: var(--font-fraunces), Georgia, serif; /* headings and big numbers */
+  --body: var(--font-inter), system-ui, sans-serif;
+}
+
 *,
 *::before,
 *::after {
@@ -6,4 +17,44 @@
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+}
+
+/* ---- Global rules added by the pages (tokens above stay untouched) ---- */
+*:where(:not(html, body)) {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Page column shared by header, main and footer. */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Visible keyboard focus on every link and button. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Text for screen readers only. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
