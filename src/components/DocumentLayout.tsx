@@ -14,7 +14,14 @@ export function siteMetadata(locale: Locale): Metadata {
     description: locale === 'zh-Hans'
       ? '追踪全球近期和即将进行的火箭发射，查看实时倒计时。'
       : SITE_DESCRIPTION,
-    icons: { apple: `${BASE_PATH}/apple-touch-icon.png`, icon: `${BASE_PATH}/favicon.ico` },
+    icons: {
+      apple: `${BASE_PATH}/apple-touch-icon.png`,
+      // Browsers that understand SVG use the sharp vector version; the rest use the .ico.
+      icon: [
+        { url: `${BASE_PATH}/favicon.ico`, sizes: '48x48' },
+        { url: `${BASE_PATH}/favicon.svg`, type: 'image/svg+xml' },
+      ],
+    },
     manifest: `${BASE_PATH}/manifest.webmanifest`,
     appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: 'default' },
   };
