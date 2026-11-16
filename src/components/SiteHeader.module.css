@@ -29,3 +29,24 @@
   color: var(--fg);
   text-decoration: underline;
 }
+
+.nav .language {
+  border-inline-start: 1px solid var(--line);
+  padding-inline-start: 16px;
+  color: var(--fg);
+}
+
+@media (max-width: 480px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+
+  .nav .language {
+    padding-inline-start: 12px;
+  }
+}

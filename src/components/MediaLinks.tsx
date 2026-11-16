@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/locale';
 import { isHttpUrl } from '@/lib/links';
 import type { Launch } from '@/lib/types';
 import { ButtonLink } from './ButtonLink';
@@ -5,13 +6,13 @@ import { Panel } from './Panel';
 import styles from './MediaLinks.module.css';
 
 /** Webcasts and info pages. Renders nothing when there are no usable links. */
-export function MediaLinks({ launch }: { launch: Launch }) {
+export function MediaLinks({ launch, locale }: { launch: Launch; locale: Locale }) {
   const webcasts = launch.webcasts.filter((link) => isHttpUrl(link.url));
   const infoLinks = launch.infoLinks.filter((link) => isHttpUrl(link.url));
   if (webcasts.length === 0 && infoLinks.length === 0) return null;
 
   return (
-    <Panel title="Photos & video">
+    <Panel title={locale === 'zh-Hans' ? '图片与视频' : 'Photos & video'}>
       <div className={styles.links}>
         {webcasts.map((link, index) => (
           <ButtonLink key={link.url} href={link.url} primary={index === 0}>

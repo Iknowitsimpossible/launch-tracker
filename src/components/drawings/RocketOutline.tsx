@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/locale';
 import pen from './pen.module.css';
 
 /**
@@ -5,8 +6,10 @@ import pen from './pen.module.css';
  * It is not to scale: the real height is told by the marker label on the right,
  * so an 18 m rocket and a 120 m rocket share the same picture.
  */
-export function RocketOutline({ heightLabel }: { heightLabel: string | null }) {
-  const description = heightLabel ? `Rocket outline, ${heightLabel} tall` : 'Rocket outline';
+export function RocketOutline({ heightLabel, locale }: { heightLabel: string | null; locale: Locale }) {
+  const description = locale === 'zh-Hans'
+    ? (heightLabel ? `火箭轮廓，高 ${heightLabel}` : '火箭轮廓')
+    : (heightLabel ? `Rocket outline, ${heightLabel} tall` : 'Rocket outline');
   return (
     <svg className={pen.sil} viewBox="0 0 96 240" role="img" aria-label={description}>
       {/* nose cone */}

@@ -1,3 +1,5 @@
+import type { Locale } from './locale';
+
 /**
  * Everyday comparisons for the rocket's big numbers ("about a 20-storey building").
  *
@@ -17,6 +19,8 @@ interface Reference {
   one: string;
   /** "jumbo jets": used after a number, e.g. "7 jumbo jets". */
   many: string;
+  /** Chinese measure word and noun, e.g. "架大型喷气客机". */
+  chinese: string;
 }
 
 /** A value must be at least this fraction of a reference to be compared with it. */
@@ -37,22 +41,22 @@ const PERSON_M = 1.7;
 const THRUST_LADDER: readonly Reference[] = [
   // Boeing 747-400 ("jumbo jet"): 4 Pratt & Whitney PW4062 engines at about 282 kN
   // (63,300 lbf) each = about 1,130 kN total takeoff thrust.
-  { amount: 1130, one: 'a jumbo jet', many: 'jumbo jets' },
+  { amount: 1130, one: 'a jumbo jet', many: 'jumbo jets', chinese: '架大型喷气客机' },
   // Boeing 737-800: 2 CFM56-7B27 engines at about 121 kN (27,300 lbf) each = 242 kN.
-  { amount: 242, one: 'a Boeing 737', many: 'Boeing 737s' },
+  { amount: 242, one: 'a Boeing 737', many: 'Boeing 737s', chinese: '架波音 737' },
   // Cessna Citation CJ4 business jet: 2 Williams FJ44-4A at about 16 kN each = 32 kN.
-  { amount: 32, one: 'a small business jet', many: 'small business jets' },
+  { amount: 32, one: 'a small business jet', many: 'small business jets', chinese: '架小型公务机' },
 ];
 
 const MASS_LADDER: readonly Reference[] = [
   // Adult male African bush elephant: about 6,000 kg (bulls range roughly 5-7 t).
-  { amount: 6000, one: 'an elephant', many: 'elephants' },
+  { amount: 6000, one: 'an elephant', many: 'elephants', chinese: '头大象' },
   // A mid-size car: about 1,500 kg.
-  { amount: 1500, one: 'a car', many: 'cars' },
+  { amount: 1500, one: 'a car', many: 'cars', chinese: '辆汽车' },
   // An adult person: about 70 kg.
-  { amount: 70, one: 'an adult', many: 'adults' },
+  { amount: 70, one: 'an adult', many: 'adults', chinese: '名成年人' },
   // A heavy bowling ball: 16 lb = 7.26 kg, rounded to 7 kg.
-  { amount: 7, one: 'a bowling ball', many: 'bowling balls' },
+  { amount: 7, one: 'a bowling ball', many: 'bowling balls', chinese: '个保龄球' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -92,16 +96,18 @@ export function plural(count: number, one: string, many: string): string {
 }
 
 /** Walks down a ladder (biggest first) and phrases the value against the first fit. */
-function compareOnLadder(value: number, ladder: readonly Reference[], verb: string): string {
+function compareOnLadder(value: number, ladder: readonly Reference[], verb: string, locale: Locale): string {
   for (const ref of ladder) {
     const ratio = value / ref.amount;
     if (ratio >= MIN_RATIO) {
       const count = friendlyRound(ratio);
+      if (locale === 'zh-Hans') return `约相当于 ${count} ${ref.chinese}`;
       return count === 1 ? `about ${ref.one}` : `${verb} ${count} ${ref.many}`;
     }
   }
   // Smaller than even the last rung: say so instead of "about 0 bowling balls".
-  return `less than ${ladder[ladder.length - 1].one}`;
+  const smallest = ladder[ladder.length - 1];
+  return locale === 'zh-Hans' ? `不足 1 ${smallest.chinese}` : `less than ${smallest.one}`;
 }
 
 /** Treats null, zero, negative and NaN alike: "nothing sensible to compare". */
@@ -115,24 +121,25 @@ function isUsable(value: number | null): value is number {
 // ---------------------------------------------------------------------------
 
 /** 70 -> "about a 20-storey building"; 4 -> "about 2 people stacked". */
-export function compareHeight(heightM: number | null): string | null {
+export function compareHeight(heightM: number | null, locale: Locale = 'en'): string | null {
   if (!isUsable(heightM)) return null;
   if (heightM >= BUILDING_MIN_M) {
     const storeys = friendlyRound(heightM / STOREY_M);
-    return `about ${articleForNumber(storeys)} ${storeys}-storey building`;
+    return locale === 'zh-Hans' ? `约 ${storeys} 层楼高` : `about ${articleForNumber(storeys)} ${storeys}-storey building`;
   }
   const people = friendlyRound(heightM / PERSON_M);
+  if (locale === 'zh-Hans') return people === 1 ? '约一人高' : `约 ${people} 人叠起来的高度`;
   return people === 1 ? "about a person's height" : `about ${people} people stacked`;
 }
 
 /** 7607 -> "roughly 7 jumbo jets"; 224 -> "about a Boeing 737". */
-export function compareThrust(thrustKN: number | null): string | null {
+export function compareThrust(thrustKN: number | null, locale: Locale = 'en'): string | null {
   if (!isUsable(thrustKN)) return null;
-  return compareOnLadder(thrustKN, THRUST_LADDER, 'roughly');
+  return compareOnLadder(thrustKN, THRUST_LADDER, 'roughly', locale);
 }
 
 /** 22800 -> "about 4 elephants"; 300 -> "about 4 adults". */
-export function compareMass(massKg: number | null): string | null {
+export function compareMass(massKg: number | null, locale: Locale = 'en'): string | null {
   if (!isUsable(massKg)) return null;
-  return compareOnLadder(massKg, MASS_LADDER, 'about');
+  return compareOnLadder(massKg, MASS_LADDER, 'about', locale);
 }

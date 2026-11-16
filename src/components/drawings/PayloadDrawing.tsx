@@ -1,3 +1,4 @@
+import type { Locale } from '@/lib/locale';
 import type { ReactNode } from 'react';
 import type { PayloadKind } from '@/lib/types';
 import pen from './pen.module.css';
@@ -11,6 +12,7 @@ import { PlateSvg } from './PlateSvg';
 
 interface Drawing {
   label: string;
+  chineseLabel: string;
   shapes: ReactNode;
 }
 
@@ -29,6 +31,7 @@ const capsule = <path d="M24 48h32M27 48l6-26q7-6 14 0l6 26M37 18.5V15h6v3.5" />
 const DRAWINGS: Record<PayloadKind, Drawing> = {
   crew: {
     label: 'A crew capsule with a window',
+    chineseLabel: '带舷窗的载人舱',
     shapes: (
       <>
         {capsule}
@@ -38,6 +41,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   cargo: {
     label: 'A cargo capsule with a crate inside and a trunk below',
+    chineseLabel: '货运舱内有货箱，下方连接货舱段',
     shapes: (
       <>
         {capsule}
@@ -48,6 +52,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   communications: {
     label: 'A satellite with a dish sending a signal',
+    chineseLabel: '一颗带碟形天线的卫星正在发送信号',
     shapes: (
       <>
         {solarPanels}
@@ -59,6 +64,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   earth_observation: {
     label: "A satellite looking down at a patch of Earth's surface",
+    chineseLabel: '一颗卫星正在观测地球表面的一片区域',
     shapes: (
       <>
         <rect x="19" y="11" width="14" height="6" />
@@ -73,6 +79,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   navigation: {
     label: 'Three satellites on an orbit sending signals down to one point on the ground',
+    chineseLabel: '轨道上的三颗卫星向地面同一点发送信号',
     shapes: (
       <>
         <path className={pen.dash} d="M4 28Q40 0 76 28" />
@@ -87,6 +94,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   science: {
     label: 'A space telescope pointed at a star',
+    chineseLabel: '一台太空望远镜对准一颗恒星',
     shapes: (
       <>
         <g transform="rotate(-35 36 40)">
@@ -100,6 +108,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   classified: {
     label: 'A satellite with its body covered by a redaction bar',
+    chineseLabel: '一颗卫星的主体被遮挡',
     shapes: (
       <>
         {solarPanels}
@@ -111,6 +120,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   test: {
     label: 'A plain test mass on a payload adapter, marked with a camera target',
+    chineseLabel: '载荷适配器上的试验配重，上有相机标记',
     shapes: (
       <>
         <ellipse cx="40" cy="18" rx="14" ry="4" />
@@ -122,6 +132,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
   other: {
     label: 'A generic satellite',
+    chineseLabel: '一颗卫星',
     shapes: (
       <>
         {solarPanels}
@@ -132,7 +143,7 @@ const DRAWINGS: Record<PayloadKind, Drawing> = {
   },
 };
 
-export function PayloadDrawing({ kind }: { kind: PayloadKind }) {
+export function PayloadDrawing({ kind, locale }: { kind: PayloadKind; locale: Locale }) {
   const drawing = DRAWINGS[kind];
-  return <PlateSvg label={drawing.label}>{drawing.shapes}</PlateSvg>;
+  return <PlateSvg label={locale === 'zh-Hans' ? drawing.chineseLabel : drawing.label}>{drawing.shapes}</PlateSvg>;
 }
