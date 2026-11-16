@@ -64,6 +64,14 @@
     "Andøya Spaceport": "挪威安岛航天港",
     "Sea Launch": "海上发射",
 
+    "Low Earth Orbit": "近地轨道",
+    "Medium Earth Orbit": "中地球轨道",
+    "Polar Orbit": "极地轨道",
+    "Sun-Synchronous Orbit": "太阳同步轨道",
+    "Geostationary Transfer Orbit": "地球静止转移轨道",
+    "Geostationary Orbit": "地球静止轨道",
+    "Mars Orbit": "火星轨道",
+
     "Unknown Payload": "未知载荷",
     "Demo Flight": "演示飞行",
     "Shenzhou 24": "神舟二十四号"

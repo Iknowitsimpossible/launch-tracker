@@ -17,6 +17,7 @@
  * shown in English on the Chinese pages, labelled 原文, and is tried again on
  * the next hourly run. The English site must never wait on the translator.
  */
+import { createHash } from 'node:crypto';
 import { readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
@@ -92,6 +93,12 @@ interface TranslationsFile {
   /** When this file was written (UTC). */
   generatedAt: string;
   model: string;
+  /**
+   * Fingerprint of the model, instructions and glossary that produced `entries`.
+   * When any of them changes, the old translations no longer follow the rules,
+   * so the cache is thrown away and everything is translated again once.
+   */
+  promptFingerprint?: string;
   /** English text exactly as it appears in launches.json -> Simplified Chinese. */
   entries: Record<string, string>;
 }
@@ -100,9 +107,15 @@ async function readJson<T>(path: string): Promise<T> {
   return JSON.parse(await readFile(path, 'utf8')) as T;
 }
 
-async function readCache(): Promise<Record<string, string>> {
+async function readCache(fingerprint: string): Promise<Record<string, string>> {
   try {
     const file = await readJson<TranslationsFile>(TRANSLATIONS_PATH);
+    if (file.promptFingerprint !== fingerprint) {
+      if (Object.keys(file.entries ?? {}).length > 0) {
+        console.log('The model, instructions or glossary changed since the cache was made: translating everything again.');
+      }
+      return {};
+    }
     return file.entries ?? {};
   } catch {
     return {}; // first run, or a damaged file: start empty
@@ -140,12 +153,14 @@ function systemPrompt(glossary: Glossary): string {
     'You translate text for Liftoff, a rocket launch tracking website, from English into Simplified Chinese for a general Chinese-speaking audience.',
     '',
     'Each item has a kind:',
-    '- "name": a rocket, company, launch pad, launch site or landing place. Use the established Chinese name when one exists (for example the name Chinese space media use). If there is none, keep the English name unchanged.',
+    '- "name": a rocket, company, launch pad, launch site or landing place. Use the established Chinese name when one exists (for example the name Chinese space media use).',
+    '  For launch pads, launch complexes, launch areas and landing zones, translate the generic words and keep the number or code, the way Chinese space news writes them. Examples: "Space Launch Complex 41" => "41号发射台"; "Launch Complex 9A" => "9A号发射工位"; "Launch Area 94 (SLS-2 / 603)" => "94号发射区（SLS-2 / 603）"; "Landing Zone 4" => "4号着陆区"; "Satish Dhawan Space Centre Second Launch Pad" => "萨迪什·达万航天中心第二发射台".',
+    '  Keep the English only for a rocket or company that has no Chinese name, and for ships (see below).',
     '- "prose": a sentence or short passage, such as a mission description, a schedule update or a link title. Translate it naturally, in the concise style of Chinese space news.',
     '',
     'Rules for every item:',
     '- Always use the glossary below for any name it lists, including names that appear inside prose.',
-    '- Keep official identifiers exactly as written: mission and satellite designations (USSF-317, NROL-136, Starlink Group 15-21), booster serials (B1100), pad codes (SLC-40), and catalog numbers.',
+    '- Keep official identifiers exactly as written: mission and satellite designations (USSF-317, NROL-136, Starlink Group 15-21), booster serials (B1100), short codes such as SLC-40 or LC-39A, and catalog numbers.',
     '- Keep the names of ships, drone ships and individual spacecraft in their original language (for example "Of Course I Still Love You", "Crew Dragon Grace").',
     '- Keep numbers, dates, times and units exactly as they are. Do not convert units or time zones.',
     '- Do not add facts, explanations or notes that are not in the English text.',
@@ -154,6 +169,11 @@ function systemPrompt(glossary: Glossary): string {
     'Glossary (English => Chinese):',
     glossaryLines,
   ].join('\n');
+}
+
+/** A short hash of everything that decides how a text gets translated. */
+function promptFingerprint(glossary: Glossary): string {
+  return createHash('sha256').update(`${MODEL}\n${systemPrompt(glossary)}`).digest('hex').slice(0, 16);
 }
 
 async function translateBatch(client: Anthropic, glossary: Glossary, items: SourceText[]): Promise<Map<string, string>> {
@@ -192,7 +212,8 @@ async function translateBatch(client: Anthropic, glossary: Glossary, items: Sour
 async function main(): Promise<void> {
   const data = await readJson<LaunchData>(LAUNCHES_PATH);
   const glossary = await readJson<Glossary>(GLOSSARY_PATH);
-  const cache = await readCache();
+  const fingerprint = promptFingerprint(glossary);
+  const cache = await readCache(fingerprint);
 
   const texts = collectTexts([...data.upcoming, ...data.recent]);
   // Only texts in the current snapshot are kept, so the file never grows without limit.
@@ -243,6 +264,7 @@ async function main(): Promise<void> {
   const output: TranslationsFile = {
     generatedAt: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
     model: MODEL,
+    promptFingerprint: fingerprint,
     entries: Object.fromEntries(Object.entries(entries).sort(([a], [b]) => a.localeCompare(b))),
   };
   await writeJsonAtomically(TRANSLATIONS_PATH, output);
