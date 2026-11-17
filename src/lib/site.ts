@@ -11,3 +11,12 @@ export const SITE_DESCRIPTION = 'Upcoming and recent rocket launches worldwide, 
  * manifest and icons) must add it themselves.
  */
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+
+/**
+ * The site's full public address, base path included and no trailing slash.
+ * Needed wherever a link leaves the site: link previews (Open Graph) and the
+ * sitemap. The deploy workflow sets it from GitHub Pages; anywhere else it
+ * falls back to the live site, so previews made from a local build still work.
+ */
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://iknowitsimpossible.github.io/launch-tracker')
+  .replace(/\/+$/, '');

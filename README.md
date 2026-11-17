@@ -67,6 +67,8 @@ GitHub Actions (hourly cron, every push to main, or manual run)
 - **Countdowns** on a page all share one one-second timer.
 - **Calendar events** (`.ics`) are generated in the browser.
 
+**Sharing and search:** each page has Open Graph and X card tags, so a pasted launch link shows the launch photo, rocket, site and date. English and Chinese pages point at each other with `hreflang` links, and `/sitemap.xml` lists every page in both languages. Missing addresses get a bilingual 404 page that explains launch pages expire 30 days after liftoff.
+
 **Built with:** Next.js 16, React 19, TypeScript, and CSS Modules. Hosted on GitHub Pages. Data from [Launch Library 2](https://thespacedevs.com/llapi) and [Open-Meteo](https://open-meteo.com). Neither of those needs a key. Translation uses the [Claude API](https://platform.claude.com), which reads `ANTHROPIC_API_KEY` from a GitHub Actions secret.
 
 ## Running it yourself
@@ -84,12 +86,15 @@ npm install
 | `npm run fetch-data` | Downloads fresh launches and weather into `data/launches.json` |
 | `npm run dev` | Starts the Next.js development server |
 | `node scripts/translate.ts` | Translates new text into `data/translations.zh.json` (needs `ANTHROPIC_API_KEY`; without it, untranslated text stays English) |
-| `npm run build` | Builds the static site into `out/` |
+| `npm test` | Runs the unit tests (Node's built-in test runner, no extra packages) |
+| `npm run build` | Builds the static site into `out/` (also type-checks everything) |
 | `npm run lint` | Runs ESLint |
 
 The repo includes a data snapshot, so the site builds without fetching. The production Launch Library API allows 15 requests per hour. When running the data script repeatedly, use the development API by setting `LL_BASE_URL=https://lldev.thespacedevs.com/2.3.0`.
 
-The site's address prefix comes from `NEXT_PUBLIC_BASE_PATH`. The deploy workflow sets it to `/launch-tracker` for GitHub Pages, and it's empty everywhere else.
+The site's address prefix comes from `NEXT_PUBLIC_BASE_PATH`. The deploy workflow sets it to `/launch-tracker` for GitHub Pages, and it's empty everywhere else. Its full public address comes from `NEXT_PUBLIC_SITE_URL`, used for link previews and the sitemap; the deploy workflow sets it, and elsewhere it defaults to the live site.
+
+Every pull request runs lint, the tests and a full build ([.github/workflows/ci.yml](.github/workflows/ci.yml)), and the deploy workflow runs the tests again before publishing.
 
 ## Project structure
 
@@ -97,5 +102,8 @@ The site's address prefix comes from `NEXT_PUBLIC_BASE_PATH`. The deploy workflo
 - `scripts/translate.ts`, `data/glossary.zh.json`: the Chinese translation step and its reviewed names.
 - `src/lib/types.ts`: the data shape shared by the data job and the pages.
 - `src/app/`: the home page, the per-launch pages (`launch/[slug]/`), and the web app manifest.
+- `src/app/global-not-found.tsx`, `src/app/sitemap.ts`: the 404 page and the sitemap.
 - `src/components/`: the page sections, including the mission drawings and the rocket figure.
-- `.github/workflows/deploy.yml`: the hourly fetch, build and deploy.
+- `tests/`: unit tests for the logic in `src/lib/`. `tests/resolve-ts.mjs` lets Node load the app's TypeScript imports as Next writes them.
+- `.github/workflows/deploy.yml`: the hourly fetch, test, build and deploy.
+- `.github/workflows/ci.yml`: the checks every pull request runs.
