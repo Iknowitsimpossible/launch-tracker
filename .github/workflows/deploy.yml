@@ -41,7 +41,8 @@ jobs:
           node-version: '26'
           cache: npm
 
-      # Tells us the sub-folder the site is served from, e.g. "/launch-tracker".
+      # Tells us the sub-folder the site is served from, e.g. "/launch-tracker",
+      # and the full address, e.g. "https://<user>.github.io/launch-tracker".
       - name: Look up the Pages address
         id: pages
         uses: actions/configure-pages@v5
@@ -86,10 +87,17 @@ jobs:
           path: data/translations.zh.json
           key: translations-zh-${{ github.run_id }}
 
+      # The pure logic (calendar files, comparisons, status wording) must pass
+      # before anything is published.
+      - name: Run the tests
+        run: npm test
+
       - name: Build the static site
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          # The full address, for link previews and the sitemap.
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@v4

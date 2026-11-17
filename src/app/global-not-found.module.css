@@ -1,0 +1,41 @@
+.notFound {
+  max-width: 640px;
+  margin: 56px 0 72px;
+}
+
+.notFound h1 {
+  font-family: var(--head);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+
+.notFound p {
+  font-size: 17px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.notFound p[lang='zh-Hans'] {
+  color: var(--muted);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 28px;
+}
+
+.links a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .notFound h1 {
+    font-size: 36px;
+  }
+}

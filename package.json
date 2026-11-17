@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "fetch-data": "node scripts/fetch-launches.ts",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --import ./tests/resolve-ts.mjs --test \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.9.0",

@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAllLaunches, getLaunchBySlug } from '@/lib/launches';
+import { formatLaunchTime } from '@/lib/formatTime';
 import { localizedPath, type Locale } from '@/lib/locale';
+import { languageAlternates, socialCard } from '@/lib/metadata';
+import { SITE_NAME } from '@/lib/site';
 import { isFinished } from '@/lib/status';
 import { localizeName } from '@/lib/translate';
 import { LaunchDetail } from './LaunchDetail';
@@ -16,11 +19,26 @@ export function launchStaticParams() {
 export function launchMetadata(slug: string, locale: Locale = 'en'): Metadata {
   const launch = getLaunchBySlug(slug);
   if (!launch) return {};
+  const path = `/launch/${launch.slug}/`;
+  const title = localizeName(launch.name, locale);
+  // The time goes last: it's what someone glancing at a shared link wants to know.
+  // Link previews are made by a server with no time zone, so the time is in UTC.
+  const when = formatLaunchTime(launch.net, launch.netPrecision, { withZone: true, fixed: true, locale });
+  const description = [launch.rocket.fullName, launch.provider.name, launch.pad.locationName]
+    .map((name) => localizeName(name, locale))
+    .concat(when)
+    .join(' · ');
   return {
-    title: localizeName(launch.name, locale),
-    description: [launch.rocket.fullName, launch.provider.name, launch.pad.locationName]
-      .map((name) => localizeName(name, locale))
-      .join(' · '),
+    title,
+    description,
+    alternates: languageAlternates(locale, path),
+    ...socialCard({
+      locale,
+      path,
+      title: `${title} · ${SITE_NAME}`,
+      description,
+      photo: launch.image && { url: launch.image.url, alt: title },
+    }),
   };
 }
 
