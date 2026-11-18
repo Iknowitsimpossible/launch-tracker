@@ -42,3 +42,6 @@ next-env.d.ts
 
 # design mockups (kept locally, not published)
 mockups.html
+
+# promo renders: ad video and cover images (kept locally, not published)
+/liftoff-*
